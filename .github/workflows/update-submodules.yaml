@@ -3,13 +3,13 @@ name: Update submodules workflow
 
 on:
   workflow_call:
-    inputs:
+    secrets:
       app-id:
         description: "GitHub App ID"
-        type: string
+        required: true
       private-key:
         description: "GitHub App private key"
-        type: string
+        required: true
 
 jobs:
   update-submodules:
@@ -23,8 +23,8 @@ jobs:
         id: get-github-app-token
         uses: getsentry/action-github-app-token@v1
         with:
-          app_id: ${{ inputs.app-id }}
-          private_key: ${{ inputs.private-key }}
+          app_id: ${{ secrets.app-id }}
+          private_key: ${{ secrets.private-key }}
 
       #----------------------------------------------
       # check-out repo & set-up node w/ volta
