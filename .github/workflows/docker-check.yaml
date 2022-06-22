@@ -1,0 +1,74 @@
+# NOTE: https://docs.github.com/ja/actions/using-workflows/reusing-workflows
+name: Docker check workflow
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: "workdir"
+        type: string
+      docker-tag:
+        description: "docker tag"
+        default: "docker-image:github-actions"
+        type: string
+
+jobs:
+  check-code:
+    runs-on: ubuntu-latest
+    steps:
+      #----------------------------------------------
+      # check-out repo & set-up python
+      #----------------------------------------------
+      - name: Check out repository
+        id: check-out-repository
+        uses: actions/checkout@v3
+
+      #----------------------------------------------
+      # lint dockerfile
+      #----------------------------------------------
+      # NOTE: https://github.com/marketplace/actions/hadolint-action
+      - name: Lint dockerfile
+        id: lint-dockerfile
+        uses: hadolint/hadolint-action@v2.0.0
+        env:
+          DOCKER_CONTENT_TRUST: 0
+        with:
+          dockerfile: ${{ inputs.working-directory }}/Dockerfile
+
+      #----------------------------------------------
+      # build docker
+      #----------------------------------------------
+      - name: Build docker
+        id: build-docker
+        working-directory: ${{ inputs.working-directory }}
+        run: docker build --no-cache -t ${{ inputs.docker-tag }} .
+
+      #----------------------------------------------
+      # scan with dockle
+      #----------------------------------------------
+      - name: Install dockle
+        id: install-dockle
+        run: |
+          VERSION=$(
+          curl --silent "https://api.github.com/repos/goodwithtech/dockle/releases/latest" | \
+          grep '"tag_name":' | \
+          sed -E 's/.*"v([^"]+)".*/\1/' \
+          ) && curl -L -o dockle.deb https://github.com/goodwithtech/dockle/releases/download/v${VERSION}/dockle_${VERSION}_Linux-64bit.deb
+          sudo dpkg -i dockle.deb && rm dockle.deb
+
+      - name: Run dockle
+        id: run-dockle
+        working-directory: ${{ inputs.working-directory }}
+        run: dockle --no-color -q ${{ inputs.docker-tag }}
+
+      #----------------------------------------------
+      # scan with trivy
+      #----------------------------------------------
+      # FIXME: should not use master tag
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ inputs.docker-tag }}
+          format: "table"
+          ignore-unfixed: true
+          output: "trivy-results.txt"
