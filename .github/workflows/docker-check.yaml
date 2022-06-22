@@ -13,7 +13,7 @@ on:
         type: string
 
 jobs:
-  check-code:
+  check-docker:
     runs-on: ubuntu-latest
     steps:
       #----------------------------------------------
