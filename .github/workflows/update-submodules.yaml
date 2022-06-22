@@ -1,0 +1,58 @@
+# NOTE: https://docs.github.com/ja/actions/using-workflows/reusing-workflows
+name: Update submodules workflow
+
+on:
+  workflow_call:
+    inputs:
+      app-id:
+        description: "GitHub App ID"
+        type: string
+      private-key:
+        description: "GitHub App private key"
+        type: string
+
+jobs:
+  update-submodules:
+    runs-on: ubuntu-latest
+    steps:
+      #----------------------------------------------
+      # get GitHub App token
+      #----------------------------------------------
+      # NOTE: https://github.com/marketplace/actions/action-github-app-token
+      - name: Get GitHub App token
+        id: get-github-app-token
+        uses: getsentry/action-github-app-token@v1
+        with:
+          app_id: ${{ inputs.app-id }}
+          private_key: ${{ inputs.private-key }}
+
+      #----------------------------------------------
+      # check-out repo & set-up node w/ volta
+      #----------------------------------------------
+      - name: Check out repository
+        id: check-out-repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          token: ${{ steps.get-github-app-token.outputs.token }}
+
+      #----------------------------------------------
+      # update submodules
+      #----------------------------------------------
+      - name: Update submodules
+        id: update-submodules
+        run: git submodule update --remote --recursive
+
+      - name: Get git status
+        id: get-git-status
+        run: echo "::set-output name=status::$(git status -s)"
+
+      - name: Commit and push
+        id: commit-and-push
+        if: ${{ steps.get-git-status.outputs.status }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -u .
+          git commit --author=. -m 'chore: update submodules'
+          git push
