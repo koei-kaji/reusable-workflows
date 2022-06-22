@@ -1,0 +1,76 @@
+# NOTE: https://docs.github.com/ja/actions/using-workflows/reusing-workflows
+name: NodeJS code check workflow
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: "workdir"
+        type: string
+      command-check-format:
+        description: "format check command"
+        type: string
+      command-lint:
+        description: "format check command"
+        type: string
+      command-test:
+        description: "format check command"
+        type: string
+
+jobs:
+  check-code:
+    runs-on: ubuntu-latest
+    steps:
+      #----------------------------------------------
+      # check-out repo & set-up node w/ volta
+      #----------------------------------------------
+      - name: Check out repository
+        id: check-out-repository
+        uses: actions/checkout@v3
+
+      # NOTE: https://github.com/marketplace/actions/volta-cli-action
+      - uses: volta-cli/action@v1
+
+      #----------------------------------------------
+      # load cached venv if cache exists
+      #----------------------------------------------
+      # NOTE: https://github.com/actions/cache/blob/main/examples.md#node---npm
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        working-directory: ${{ inputs.working-directory }}
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+
+      - name: Load cached venv
+        id: cached-node-dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ inputs.working-directory }}/${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      #----------------------------------------------
+      # install dependencies if cache does not exist
+      #----------------------------------------------
+      - name: Install dependencies
+        id: install-dependencies
+        if: steps.cached-node-dependencies.outputs.cache-hit != 'true'
+        working-directory: ${{ inputs.working-directory }}
+        run: npm ci
+
+      #----------------------------------------------
+      # run test suite
+      #----------------------------------------------
+      - name: Check format
+        id: check-format
+        working-directory: ${{ inputs.working-directory }}
+        run: ${{ inputs.command-check-format }}
+
+      - name: Lint
+        id: lint
+        working-directory: ${{ inputs.working-directory }}
+        run: ${{ inputs.command-lint }}
+
+      - name: Test
+        id: test
+        working-directory: ${{ inputs.working-directory }}
+        run: ${{ inputs.command-test }}
