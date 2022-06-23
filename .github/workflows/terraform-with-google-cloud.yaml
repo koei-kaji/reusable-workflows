@@ -13,6 +13,9 @@ on:
       backend-gcs:
         description: "backend gcs bucket name"
         required: true
+      tf-vars:
+        description: "terraform vars"
+        required: true
     inputs:
       environment-directory:
         description: "environment directory path"
@@ -66,7 +69,9 @@ jobs:
 
       - name: Set environment for terraform
         id: set-environment-for-terraform
-        run: echo "GOOGLE_CREDENTIALS=${{ steps.authenticate-to-google-cloud.credentials_file_path }}" >> $GITHUB_ENV
+        run: |
+          echo "GOOGLE_CREDENTIALS=${{ steps.authenticate-to-google-cloud.credentials_file_path }}" >> $GITHUB_ENV
+          echo "${{ secrets.tf-vars }}" >> $GITHUB_ENV
 
       #----------------------------------------------
       # setup terraform
