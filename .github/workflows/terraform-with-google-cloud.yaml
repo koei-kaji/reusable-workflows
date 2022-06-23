@@ -1,0 +1,108 @@
+# NOTE: https://docs.github.com/ja/actions/using-workflows/reusing-workflows
+name: Terraform with google cloud workflow
+
+on:
+  workflow_call:
+    secrets:
+      workload-identity-provider:
+        description: "https://github.com/google-github-actions/auth/blob/95a6bc2a27ae409a01ea58dd0732eccaa088ec07/action.yml#L30-L34"
+        required: true
+      service-account:
+        description: "https://github.com/google-github-actions/auth/blob/95a6bc2a27ae409a01ea58dd0732eccaa088ec07/action.yml#L38-L40"
+        required: true
+    inputs:
+      terraform-version:
+        description: "terraform version"
+        type: string
+        required: true
+      comamnd-check-format:
+        description: "format check command"
+        type: string
+        default: "terraform fmt -recursive -check"
+      command-lint:
+        description: "lint command"
+        type: string
+        default: "terraform validate"
+      command-init:
+        description: "init command"
+        type: string
+      command-plan:
+        description: "plan command"
+        type: string
+        default: ""
+      command-apply:
+        description: "apply command"
+        type: string
+        default: ""
+
+jobs:
+  update-submodules:
+    runs-on: ubuntu-latest
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      #----------------------------------------------
+      # check-out repo
+      #----------------------------------------------
+      - name: Check out repository
+        id: check-out-repository
+        uses: actions/checkout@v3
+
+      #----------------------------------------------
+      # authenticate to google cloud & set env
+      #----------------------------------------------
+      - name: Authenticate to Google Cloud
+        id: authenticate-to-google-cloud
+        uses: google-github-actions/auth@v0
+        with:
+          workload_identity_provider: ${{ secrets.workload-identity-provider }}
+          service_account: ${{ secrets.service-account }}
+
+      - name: Set environment for terraform
+        id: set-environment-for-terraform
+        run: echo "GOOGLE_CREDENTIALS=${{ steps.authenticate-to-google-cloud.credentials_file_path }}" >> $GITHUB_ENV
+
+      #----------------------------------------------
+      # setup terraform
+      #----------------------------------------------
+      - name: Setup Terraform
+        id: setup-terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ inputs.terraform-version }}
+
+      #----------------------------------------------
+      # run test suite
+      #----------------------------------------------
+      - name: Check format
+        id: check-format
+        run: ${{ inputs.command-check-format }}
+
+      - name: lint
+        id: lint
+        run: ${{ inputs.command-lint}}
+
+      #----------------------------------------------
+      # init terraform
+      #----------------------------------------------
+      - name: Init
+        id: init
+        run: ${{ inputs.command-init }}
+
+      #----------------------------------------------
+      # plan
+      #----------------------------------------------
+      - name: Plan
+        id: plan
+        if: ${{ inputs.command-plan }} != ""
+        run: ${{ inputs.command-plan }}
+
+      #----------------------------------------------
+      # apply
+      #----------------------------------------------
+      - name: Apply
+        id: apply
+        if: ${{ inputs.command-apply }} != ""
+        run: ${{ inputs.command-apply }}
