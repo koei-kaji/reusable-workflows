@@ -26,6 +26,7 @@ on:
       command-init:
         description: "init command"
         type: string
+        required: true
       command-plan:
         description: "plan command"
         type: string
