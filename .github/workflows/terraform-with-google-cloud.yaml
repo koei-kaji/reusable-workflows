@@ -10,7 +10,14 @@ on:
       service-account:
         description: "https://github.com/google-github-actions/auth/blob/95a6bc2a27ae409a01ea58dd0732eccaa088ec07/action.yml#L38-L40"
         required: true
+      backend-gcs:
+        description: "backend gcs bucket name"
+        required: true
     inputs:
+      environment-directory:
+        description: "environment directory path"
+        type: string
+        default: "."
       terraform-version:
         description: "terraform version"
         type: string
@@ -23,10 +30,6 @@ on:
         description: "lint command"
         type: string
         default: "terraform validate"
-      command-init:
-        description: "init command"
-        type: string
-        required: true
       command-plan:
         description: "plan command"
         type: string
@@ -90,7 +93,8 @@ jobs:
       #----------------------------------------------
       - name: Init
         id: init
-        run: ${{ inputs.command-init }}
+        working-directory: ${{ inputs.environment-directory }}
+        run: "terraform init -backend-config='bucket=${{secrets.backend-gcs}}'"
 
       #----------------------------------------------
       # plan
@@ -98,6 +102,7 @@ jobs:
       - name: Plan
         id: plan
         if: ${{ inputs.command-plan }} != ""
+        working-directory: ${{ inputs.environment-directory }}
         run: ${{ inputs.command-plan }}
 
       #----------------------------------------------
@@ -106,4 +111,5 @@ jobs:
       - name: Apply
         id: apply
         if: ${{ inputs.command-apply }} != ""
+        working-directory: ${{ inputs.environment-directory }}
         run: ${{ inputs.command-apply }}
