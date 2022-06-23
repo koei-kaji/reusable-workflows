@@ -117,4 +117,4 @@ jobs:
         id: apply
         if: ${{ inputs.do-apply }}
         working-directory: ${{ inputs.environment-directory }}
-        run: "echo hello"
+        run: "terraform apply -auto-approve"
