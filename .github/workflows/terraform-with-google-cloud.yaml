@@ -37,7 +37,7 @@ on:
         default: ""
 
 jobs:
-  update-submodules:
+  terraform:
     runs-on: ubuntu-latest
     # Add "id-token" with the intended permissions.
     permissions:
