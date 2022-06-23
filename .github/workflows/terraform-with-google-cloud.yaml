@@ -106,7 +106,7 @@ jobs:
       #----------------------------------------------
       - name: Plan
         id: plan
-        if: ${{ inputs.do-plan }} == true
+        if: ${{ inputs.do-plan }}
         working-directory: ${{ inputs.environment-directory }}
         run: "terraform plan"
 
@@ -115,6 +115,6 @@ jobs:
       #----------------------------------------------
       - name: Apply
         id: apply
-        if: ${{ inputs.do-apply }} == true
+        if: ${{ inputs.do-apply }}
         working-directory: ${{ inputs.environment-directory }}
-        run: "terraform apply"
+        run: "echo hello"
