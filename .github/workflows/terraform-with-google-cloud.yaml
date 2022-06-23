@@ -33,14 +33,14 @@ on:
         description: "lint command"
         type: string
         default: "terraform validate"
-      command-plan:
-        description: "plan command"
-        type: string
-        default: ""
-      command-apply:
-        description: "apply command"
-        type: string
-        default: ""
+      do-plan:
+        description: "whether to execute plan command"
+        type: boolean
+        default: false
+      do-apply:
+        description: "whether to execute apply command"
+        type: boolean
+        default: false
 
 jobs:
   terraform:
@@ -106,15 +106,15 @@ jobs:
       #----------------------------------------------
       - name: Plan
         id: plan
-        if: ${{ inputs.command-plan }} != ""
+        if: ${{ inputs.do-plan }} == true
         working-directory: ${{ inputs.environment-directory }}
-        run: ${{ inputs.command-plan }}
+        run: "terraform plan"
 
       #----------------------------------------------
       # apply
       #----------------------------------------------
       - name: Apply
         id: apply
-        if: ${{ inputs.command-apply }} != ""
+        if: ${{ inputs.do-apply }} == true
         working-directory: ${{ inputs.environment-directory }}
-        run: ${{ inputs.command-apply }}
+        run: "terraform apply"
