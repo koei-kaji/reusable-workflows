@@ -27,7 +27,7 @@ jobs:
           private_key: ${{ secrets.private-key }}
 
       #----------------------------------------------
-      # check-out repo & set-up node w/ volta
+      # check-out repo
       #----------------------------------------------
       - name: Check out repository
         id: check-out-repository
