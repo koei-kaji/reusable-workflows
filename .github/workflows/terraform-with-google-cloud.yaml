@@ -65,6 +65,12 @@ on:
       plan-stdout:
         description: "stdout of plan step"
         value: ${{ jobs.terraform.outputs.plan-stdout }}
+      apply-outcome:
+        description: "outcome of apply step"
+        value: ${{ jobs.terraform.outputs.apply-outcome }}
+      apply-stdout:
+        description: "stdout of apply step"
+        value: ${{ jobs.terraform.outputs.apply-stdout }}
 
 jobs:
   terraform:
@@ -79,6 +85,8 @@ jobs:
       init-outcome: ${{ steps.init.outcome }}
       plan-outcome: ${{ steps.plan.outcome }}
       plan-stdout: ${{ steps.plan.outputs.stdout }}
+      apply-outcome: ${{ steps.apply.outcome }}
+      apply-stdout: ${{ steps.apply.outputs.stdout }}
     steps:
       #----------------------------------------------
       # check-out repo
