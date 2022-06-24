@@ -36,9 +36,13 @@ on:
       do-plan:
         description: "whether to execute plan command"
         type: boolean
-        default: false
+        default: true
       do-apply:
         description: "whether to execute apply command"
+        type: boolean
+        default: false
+      do-update-pull-request:
+        description: "whether to update when pull request"
         type: boolean
         default: false
 
@@ -116,8 +120,64 @@ jobs:
       #----------------------------------------------
       - name: Apply
         id: apply
-        # if: ${{ inputs.do-apply && steps.plan.outcome == 'success' }}
-        if: ${{ inputs.do-plan && steps.plan.outcome == 'success' }}
+        if: ${{ inputs.do-apply && steps.plan.outcome == 'success' }}
         working-directory: ${{ inputs.environment-directory }}
-        # run: "terraform apply -auto-approve"
-        run: "echo DEBUG NOW"
+        run: "terraform apply -auto-approve"
+        continue-on-error: true
+
+      #----------------------------------------------
+      # update pull request
+      #----------------------------------------------
+      # https://github.com/marketplace/actions/github-script
+      - name: Update Pull Request
+        id: update-pull-request
+        if: ${{ inputs.do-update-pull-request && github.event_name == 'pull_request' }}
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            let plan = `terraform\n${{ steps.plan.outputs.stdout }}`;
+            let apply = `terraform\n${{ steps.apply.outputs.stdout }}`;
+
+            const output = `
+            #### Terraform Format and Style 🖌\`${{ steps.check-format.outcome }}\`
+            #### Terraform Lint 🤖\`${{ steps.lint.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            #### Terraform Apply 🚀\`${{ steps.apply.outcome }}\`
+
+
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`\n
+            ${plan}
+            \`\`\`
+
+            </details>
+
+            <details><summary>Show Apply</summary>
+
+            \`\`\`\n
+            ${apply}
+            \`\`\`
+
+            </details>
+
+
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+      #----------------------------------------------
+      # exit 1 if plan/apply is error
+      #----------------------------------------------
+      - name: Status
+        id: status
+        if: ${{ steps.plan.outcome == 'failure' || steps.apply.outcome == 'failure' }}
+        run: exit 1
