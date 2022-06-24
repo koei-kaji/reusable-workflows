@@ -45,6 +45,10 @@ on:
         description: "whether to continue on error when running plan step"
         type: boolean
         default: false
+      continue-on-error-apply:
+        description: "whether to continue on error when running apply step"
+        type: boolean
+        default: false
     outputs:
       check-format-outcome:
         description: "outcome of check format step"
@@ -145,3 +149,4 @@ jobs:
         if: ${{ inputs.do-apply && steps.plan.outcome == 'success' }}
         working-directory: ${{ inputs.environment-directory }}
         run: "terraform apply -auto-approve -no-color"
+        continue-on-error: ${{ inputs.continue-on-error-apply }}
