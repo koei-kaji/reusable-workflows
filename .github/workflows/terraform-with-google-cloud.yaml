@@ -41,6 +41,16 @@ on:
         description: "whether to execute apply command"
         type: boolean
         default: false
+      continue-on-error-plan:
+        description: "whether to continue on error when running plan step"
+        type: boolean
+        default: false
+    outputs:
+      check-format-outcome: ${{ jobs.terraform.outputs.check-format-outcome }}
+      lint-outcome: ${{ jobs.terraform.outputs.lint-outcome }}
+      init-outcome: ${{ jobs.terraform.outputs.init-outcome }}
+      plan-outcome: ${{ jobs.terraform.outputs.plan-outcome }}
+      plan-stdout: ${{ jobs.terraform.outputs.plan-stdout }}
 
 jobs:
   terraform:
@@ -49,6 +59,12 @@ jobs:
     permissions:
       contents: "read"
       id-token: "write"
+    outputs:
+      check-format-outcome: ${{ steps.check-format.outcome }}
+      lint-outcome: ${{ steps.lint.outcome }}
+      init-outcome: ${{ steps.init.outcome }}
+      plan-outcome: ${{ steps.plan.outcome }}
+      plan-stdout: ${{ steps.plan.stdout }}
     steps:
       #----------------------------------------------
       # check-out repo
@@ -109,7 +125,7 @@ jobs:
         if: ${{ inputs.do-plan }}
         working-directory: ${{ inputs.environment-directory }}
         run: "terraform plan"
-        continue-on-error: true
+        continue-on-error: ${{ inputs.continue-on-error-plan }}
 
       #----------------------------------------------
       # apply
@@ -119,4 +135,3 @@ jobs:
         if: ${{ inputs.do-apply && steps.plan.outcome == 'success' }}
         working-directory: ${{ inputs.environment-directory }}
         run: "terraform apply -auto-approve"
-        continue-on-error: true
