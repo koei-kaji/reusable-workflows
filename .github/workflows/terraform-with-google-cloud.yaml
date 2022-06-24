@@ -46,11 +46,21 @@ on:
         type: boolean
         default: false
     outputs:
-      check-format-outcome: ${{ jobs.terraform.outputs.check-format-outcome }}
-      lint-outcome: ${{ jobs.terraform.outputs.lint-outcome }}
-      init-outcome: ${{ jobs.terraform.outputs.init-outcome }}
-      plan-outcome: ${{ jobs.terraform.outputs.plan-outcome }}
-      plan-stdout: ${{ jobs.terraform.outputs.plan-stdout }}
+      check-format-outcome:
+        description: "outcome of check format step"
+        value: ${{ jobs.terraform.outputs.check-format-outcome }}
+      lint-outcome:
+        description: "outcome of lint step"
+        value: ${{ jobs.terraform.outputs.lint-outcome }}
+      init-outcome:
+        description: "outcome of init step"
+        value: ${{ jobs.terraform.outputs.init-outcome }}
+      plan-outcome:
+        description: "outcome of plan step"
+        value: ${{ jobs.terraform.outputs.plan-outcome }}
+      plan-stdout:
+        description: "stdout of plan step"
+        value: ${{ jobs.terraform.outputs.plan-stdout }}
 
 jobs:
   terraform:
@@ -60,11 +70,11 @@ jobs:
       contents: "read"
       id-token: "write"
     outputs:
-      check-format-outcome: ${{ steps.check-format.outputs.exitcode }}
-      lint-outcome: ${{ steps.lint.outputs.exitcode }}
-      init-outcome: ${{ steps.init.outputs.exitcode }}
-      plan-outcome: ${{ steps.plan.outputs.exitcode }}
-      plan-stdout: ${{ steps.plan.outputs.stdout }}
+      check-format-outcome: ${{ steps.check-format.outcome }}
+      lint-outcome: ${{ steps.lint.outcome }}
+      init-outcome: ${{ steps.init.outcome }}
+      plan-outcome: ${{ steps.plan.outcome }}
+      plan-stdout: ${{ steps.plan.stdout }}
     steps:
       #----------------------------------------------
       # check-out repo
