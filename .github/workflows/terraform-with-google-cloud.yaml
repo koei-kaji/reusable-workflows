@@ -60,11 +60,11 @@ jobs:
       contents: "read"
       id-token: "write"
     outputs:
-      check-format-outcome: ${{ steps.check-format.outcome }}
-      lint-outcome: ${{ steps.lint.outcome }}
-      init-outcome: ${{ steps.init.outcome }}
-      plan-outcome: ${{ steps.plan.outcome }}
-      plan-stdout: ${{ steps.plan.stdout }}
+      check-format-outcome: ${{ steps.check-format.outputs.exitcode }}
+      lint-outcome: ${{ steps.lint.outputs.exitcode }}
+      init-outcome: ${{ steps.init.outputs.exitcode }}
+      plan-outcome: ${{ steps.plan.outputs.exitcode }}
+      plan-stdout: ${{ steps.plan.outputs.stdout }}
     steps:
       #----------------------------------------------
       # check-out repo
