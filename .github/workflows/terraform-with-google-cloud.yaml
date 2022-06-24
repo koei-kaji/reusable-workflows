@@ -71,6 +71,9 @@ on:
       apply-stdout:
         description: "stdout of apply step"
         value: ${{ jobs.terraform.outputs.apply-stdout }}
+      apply-stderr:
+        description: "stderr of apply step"
+        value: ${{ jobs.terraform.outputs.apply-stderr }}
 
 jobs:
   terraform:
@@ -87,6 +90,7 @@ jobs:
       plan-stdout: ${{ steps.plan.outputs.stdout }}
       apply-outcome: ${{ steps.apply.outcome }}
       apply-stdout: ${{ steps.apply.outputs.stdout }}
+      apply-stderr: ${{ steps.apply.outputs.stderr }}
     steps:
       #----------------------------------------------
       # check-out repo
