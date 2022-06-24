@@ -134,7 +134,7 @@ jobs:
         id: plan
         if: ${{ inputs.do-plan }}
         working-directory: ${{ inputs.environment-directory }}
-        run: "terraform plan"
+        run: "terraform plan -no-color"
         continue-on-error: ${{ inputs.continue-on-error-plan }}
 
       #----------------------------------------------
@@ -144,4 +144,4 @@ jobs:
         id: apply
         if: ${{ inputs.do-apply && steps.plan.outcome == 'success' }}
         working-directory: ${{ inputs.environment-directory }}
-        run: "terraform apply -auto-approve"
+        run: "terraform apply -auto-approve -no-color"
