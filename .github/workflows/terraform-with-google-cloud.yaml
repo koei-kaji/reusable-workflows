@@ -74,7 +74,7 @@ jobs:
       lint-outcome: ${{ steps.lint.outcome }}
       init-outcome: ${{ steps.init.outcome }}
       plan-outcome: ${{ steps.plan.outcome }}
-      plan-stdout: ${{ steps.plan.stdout }}
+      plan-stdout: ${{ steps.plan.outputs.stdout }}
     steps:
       #----------------------------------------------
       # check-out repo
