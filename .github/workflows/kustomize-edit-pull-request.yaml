@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: "write"
-      requests: "write"
+      pull-requests: "write"
     steps:
       #----------------------------------------------
       # get GitHub App token
