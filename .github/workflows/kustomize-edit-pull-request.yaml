@@ -84,6 +84,7 @@ jobs:
         with:
           token: ${{ steps.get-github-app-token.outputs.token }}
           commit-message: "chore: update image"
+          author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
           branch: "update-image/${{ inputs.target-image-name }}"
           delete-branch: true
           title: "[${{ inputs.target-image-name }}] update image"
