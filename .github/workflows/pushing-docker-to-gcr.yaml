@@ -77,4 +77,4 @@ jobs:
         id: push-docker
         run: |
           docker push ${{ env.DOCKER_TAG }}
-          "echo "::set-output name=DOCKER_TAG::${{ env.DOCKER_TAG }}"
+          echo "::set-output name=DOCKER_TAG::${{ env.DOCKER_TAG }}"
