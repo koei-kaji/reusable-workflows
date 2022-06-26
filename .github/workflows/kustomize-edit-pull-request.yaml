@@ -30,6 +30,9 @@ on:
 jobs:
   kustomize-edit-pull-request:
     runs-on: ubuntu-latest
+    permissions:
+      contents: "write"
+      requests: "write"
     steps:
       #----------------------------------------------
       # get GitHub App token
@@ -76,7 +79,7 @@ jobs:
       #----------------------------------------------
       # create pull request
       #----------------------------------------------
-      - name: Create Pull Request
+      - name: Create Pull request
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.get-github-app-token.outputs.token }}
