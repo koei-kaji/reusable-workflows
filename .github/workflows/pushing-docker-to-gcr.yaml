@@ -25,6 +25,10 @@ on:
         description: "docker tag"
         type: string
         required: true
+    outputs:
+      pushed-tag:
+        description: "pushed tag"
+        value: ${{ jobs.pushing-docker.outputs.pushed-tag }}
 
 jobs:
   pushing-docker:
@@ -35,6 +39,8 @@ jobs:
       id-token: "write"
     env:
       DOCKER_TAG: "${{ secrets.registry-host }}/${{ secrets.project-id }}/${{ inputs.docker-tag }}"
+    outputs:
+      pushed-tag: ${{ steps.push-docker.DOCKER_TAG }}
     steps:
       #----------------------------------------------
       # check-out repo & set-up python
@@ -69,4 +75,6 @@ jobs:
 
       - name: Push docker
         id: push-docker
-        run: docker push ${{ env.DOCKER_TAG }}
+        run: |
+          docker push ${{ env.DOCKER_TAG }}
+          "echo "::set-output name=DOCKER_TAG::${{ env.DOCKER_TAG }}"
