@@ -19,8 +19,12 @@ on:
         type: string
 
 jobs:
-  check-docker:
+  pushing-docker:
     runs-on: ubuntu-latest
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: "read"
+      id-token: "write"
     steps:
       #----------------------------------------------
       # check-out repo & set-up python
