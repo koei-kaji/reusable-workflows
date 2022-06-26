@@ -1,0 +1,58 @@
+# NOTE: https://docs.github.com/ja/actions/using-workflows/reusing-workflows
+name: Pushing docker to gcr workflow
+
+on:
+  workflow_call:
+    secrets:
+      workload-identity-provider:
+        description: "https://github.com/google-github-actions/auth/blob/95a6bc2a27ae409a01ea58dd0732eccaa088ec07/action.yml#L30-L34"
+        required: true
+      service-account:
+        description: "https://github.com/google-github-actions/auth/blob/95a6bc2a27ae409a01ea58dd0732eccaa088ec07/action.yml#L38-L40"
+        required: true
+      docker-tag:
+        description: "docker tag"
+        required: true
+    inputs:
+      working-directory:
+        description: "workdir"
+        type: string
+
+jobs:
+  check-docker:
+    runs-on: ubuntu-latest
+    steps:
+      #----------------------------------------------
+      # check-out repo & set-up python
+      #----------------------------------------------
+      - name: Check out repository
+        id: check-out-repository
+        uses: actions/checkout@v3
+
+      #----------------------------------------------
+      # authenticate to google cloud & set up gcloud
+      #----------------------------------------------
+      - name: Authenticate to Google Cloud
+        id: authenticate-to-google-cloud
+        uses: google-github-actions/auth@v0
+        with:
+          workload_identity_provider: ${{ secrets.workload-identity-provider }}
+          service_account: ${{ secrets.service-account }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+
+      - name: Configure docker
+        run: gcloud auth configure-docker -q
+
+      #----------------------------------------------
+      # build & push
+      #----------------------------------------------
+      - name: Build docker
+        id: build-docker
+        working-directory: ${{ inputs.working-directory }}
+        run: docker build --no-cache -t ${{ secrets.docker-tag }} .
+
+      - name: Push docker
+        id: push-docker
+        run: docker push $TAG
