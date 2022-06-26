@@ -59,4 +59,4 @@ jobs:
 
       - name: Push docker
         id: push-docker
-        run: docker push $TAG
+        run: docker push ${{ secrets.docker-tag }}
