@@ -40,7 +40,7 @@ jobs:
     env:
       DOCKER_TAG: "${{ secrets.registry-host }}/${{ secrets.project-id }}/${{ inputs.docker-tag }}"
     outputs:
-      pushed-tag: ${{ steps.push-docker.DOCKER_TAG }}
+      pushed-tag: ${{ steps.push-docker.outputs.DOCKER_TAG }}
     steps:
       #----------------------------------------------
       # check-out repo & set-up python
