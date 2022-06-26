@@ -4,8 +4,11 @@ name: Kustomize edit pull request workflow
 on:
   workflow_call:
     secrets:
-      token:
-        description: "github token"
+      app-id:
+        description: "GitHub App ID"
+        required: true
+      private-key:
+        description: "GitHub App private key"
         required: true
       docker-tag:
         description: "docker tag"
@@ -28,6 +31,17 @@ jobs:
   kustomize-edit-pull-request:
     runs-on: ubuntu-latest
     steps:
+      #----------------------------------------------
+      # get GitHub App token
+      #----------------------------------------------
+      # NOTE: https://github.com/marketplace/actions/action-github-app-token
+      - name: Get GitHub App token
+        id: get-github-app-token
+        uses: getsentry/action-github-app-token@v1
+        with:
+          app_id: ${{ secrets.app-id }}
+          private_key: ${{ secrets.private-key }}
+
       #----------------------------------------------
       # check-out repo & set-up python
       #----------------------------------------------
@@ -65,7 +79,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
-          token: ${{ secrets.token }}
+          token: ${{ secrets.get-github-app-token.outputs.token }}
           commit-message: "chore: update image"
           branch: "update-image/${{ inputs.target-image-name }}"
           delete-branch: true
