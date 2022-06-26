@@ -20,8 +20,10 @@ on:
       working-directory:
         description: "workdir"
         type: string
+        default: "."
       docker-tag:
         description: "docker tag"
+        type: string
         required: true
 
 jobs:
