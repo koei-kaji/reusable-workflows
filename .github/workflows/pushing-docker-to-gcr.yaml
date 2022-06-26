@@ -10,13 +10,19 @@ on:
       service-account:
         description: "https://github.com/google-github-actions/auth/blob/95a6bc2a27ae409a01ea58dd0732eccaa088ec07/action.yml#L38-L40"
         required: true
-      docker-tag:
-        description: "docker tag"
+      project-id:
+        description: "project id"
+        required: true
+      registry-host:
+        description: "registory host"
         required: true
     inputs:
       working-directory:
         description: "workdir"
         type: string
+      docker-tag:
+        description: "docker tag"
+        required: true
 
 jobs:
   pushing-docker:
@@ -25,6 +31,8 @@ jobs:
     permissions:
       contents: "read"
       id-token: "write"
+    env:
+      DOCKER_TAG: "${{ secrets.registry-host }}/${{ secrets.project-id }}/${{ inputs.docker-tag }}"
     steps:
       #----------------------------------------------
       # check-out repo & set-up python
@@ -47,7 +55,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0
 
       - name: Configure docker
-        run: gcloud auth configure-docker -q
+        run: gcloud auth configure-docker ${{ secrets.registry-host }} -q
 
       #----------------------------------------------
       # build & push
@@ -55,8 +63,8 @@ jobs:
       - name: Build docker
         id: build-docker
         working-directory: ${{ inputs.working-directory }}
-        run: docker build --no-cache -t ${{ secrets.docker-tag }} .
+        run: docker build --no-cache -t ${{ env.DOCKER_TAG }} .
 
       - name: Push docker
         id: push-docker
-        run: docker push ${{ secrets.docker-tag }}
+        run: docker push ${{ env.DOCKER_TAG }}
