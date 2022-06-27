@@ -25,7 +25,7 @@ on:
       target-image-name:
         description: "target image name"
         type: string
-        required: true
+        default: ""
       build-output-file-path:
         description: "build output file name"
         type: string
@@ -70,7 +70,7 @@ jobs:
       #----------------------------------------------
       - name: Update image with kustomize
         id: update-image-with-kustomize
-        if: ${{ inputs.target-image-name }} != "" && ${{ inputs.image-set-directory }} != ""
+        if: ${{ inputs.target-image-name != "" && inputs.image-set-directory != "" }}
         working-directory: ${{ inputs.image-set-directory }}
         run: kustomize edit set image ${{ inputs.target-image-name }}=${{ secrets.docker-tag }}
 
