@@ -14,8 +14,12 @@ on:
         description: "docker tag"
         required: true
     inputs:
-      working-directory:
-        description: "workdir"
+      image-set-directory:
+        description: "image set directory"
+        type: string
+        default: ""
+      build-input-directory:
+        description: "image set directory"
         type: string
         default: "."
       target-image-name:
@@ -66,8 +70,8 @@ jobs:
       #----------------------------------------------
       - name: Update image with kustomize
         id: update-image-with-kustomize
-        if: ${{ inputs.target-image-name }} != ""
-        working-directory: ${{ inputs.working-directory }}
+        if: ${{ inputs.target-image-name }} != "" && ${{ inputs.image-set-directory }} != ""
+        working-directory: ${{ inputs.image-set-directory }}
         run: kustomize edit set image ${{ inputs.target-image-name }}=${{ secrets.docker-tag }}
 
       #----------------------------------------------
@@ -75,7 +79,7 @@ jobs:
       #----------------------------------------------
       - name: Build yaml with kustomize
         id: build-yaml-with-kustomize
-        run: kustomize build ${{ inputs.working-directory }} > ${{ inputs.build-output-file-path }}
+        run: kustomize build ${{ inputs.build-input-directory }} > ${{ inputs.build-output-file-path }}
 
       #----------------------------------------------
       # create pull request
@@ -92,9 +96,8 @@ jobs:
           title: "[kustomize] build from ${{ inputs.working-directory }} to ${{ inputs.build-output-file-path }}"
           body: |
             Build a set of KRM resources
-            - updated image: `${{ inputs.target-image-name }}`
-            - using directory: `${{ inputs.working-directory }}`
+            - updated image: `${{ inputs.working-directory }}:${{ inputs.target-image-name }}`
+            - build input: `${{ inputs.build-input-directory }}`
             - build output: `${{ inputs.build-output-file-path }}`
-
           labels: |
             kustomize
