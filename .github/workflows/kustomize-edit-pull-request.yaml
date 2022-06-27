@@ -66,6 +66,7 @@ jobs:
       #----------------------------------------------
       - name: Update image with kustomize
         id: update-image-with-kustomize
+        if: ${{ inputs.target-image-name }} != ""
         working-directory: ${{ inputs.working-directory }}
         run: kustomize edit set image ${{ inputs.target-image-name }}=${{ secrets.docker-tag }}
 
