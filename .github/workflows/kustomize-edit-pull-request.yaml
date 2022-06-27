@@ -93,7 +93,7 @@ jobs:
           branch: "kustomize/patch"
           branch-suffix: "short-commit-hash"
           delete-branch: true
-          title: "[kustomize] build from ${{ inputs.working-directory }} to ${{ inputs.build-output-file-path }}"
+          title: "[kustomize] build ${{ inputs.build-input-directory }}"
           body: |
             Build a set of KRM resources
             - updated image: `${{ inputs.working-directory }}:${{ inputs.target-image-name }}`
