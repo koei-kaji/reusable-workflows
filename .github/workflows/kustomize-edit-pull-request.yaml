@@ -86,14 +86,15 @@ jobs:
           token: ${{ steps.get-github-app-token.outputs.token }}
           commit-message: "chore: update image"
           author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
-          branch: "update-image/${{ inputs.target-image-name }}"
+          branch: "kustomize/patch"
+          branch-suffix: "short-commit-hash"
           delete-branch: true
-          title: "[${{ inputs.target-image-name }}] update image"
+          title: "[kustomize] build from ${{ inputs.working-directory }} to ${{ inputs.build-output-file-path }}"
           body: |
-            Update image
-            - directory: `${{ inputs.working-directory }}`
-            - image: `${{ inputs.target-image-name }}`
-            - build: `${{ inputs.build-output-file-path }}`
+            Build a set of KRM resources
+            - updated image: `${{ inputs.target-image-name }}`
+            - using directory: `${{ inputs.working-directory }}`
+            - build output: `${{ inputs.build-output-file-path }}`
 
           labels: |
             kustomize
