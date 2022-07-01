@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - ".github/workflows/python-code-check.yaml"
-      - ".github/workflows/test-python-code-check.yaml"
+      - ".github/workflows/__test-python-code-check.yaml"
       - "test_stubs/python/**"
       - "!**.md"
 
