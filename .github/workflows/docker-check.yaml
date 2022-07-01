@@ -46,24 +46,16 @@ jobs:
       - name: Build docker
         id: build-docker
         working-directory: ${{ inputs.working-directory }}
-        run: docker build --no-cache -t ${{ inputs.docker-tag }} -f ${{ inputs.dockerfile-name }}
+        run: docker build --no-cache -t ${{ inputs.docker-tag }} -f ${{ inputs.dockerfile-name }} .
 
       #----------------------------------------------
       # scan with dockle
       #----------------------------------------------
-      - name: Install dockle
-        id: install-dockle
-        run: |
-          VERSION=$(
-          curl --silent "https://api.github.com/repos/goodwithtech/dockle/releases/latest" | \
-          grep '"tag_name":' | \
-          sed -E 's/.*"v([^"]+)".*/\1/' \
-          ) && curl -L -o dockle.deb https://github.com/goodwithtech/dockle/releases/download/v${VERSION}/dockle_${VERSION}_Linux-64bit.deb
-          sudo dpkg -i dockle.deb && rm dockle.deb
-
       - name: Run dockle
         id: run-dockle
-        run: dockle --no-color ${{ inputs.docker-tag }}
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            goodwithtech/dockle:latest --no-color ${{ inputs.docker-tag }}
 
       #----------------------------------------------
       # scan with trivy
