@@ -172,7 +172,9 @@ jobs:
         id: apply
         if: ${{ inputs.do-apply && steps.plan.outcome == 'success' }}
         working-directory: ${{ inputs.environment-directory }}
-        run: "terraform apply -auto-approve -no-color"
+        # FIXME: debug
+        # run: "terraform apply -auto-approve -no-color"
+        run: echo "::set-output name=stderr::error" && exit 1
         continue-on-error: true
 
       - name: Create an issue if apply was failure
