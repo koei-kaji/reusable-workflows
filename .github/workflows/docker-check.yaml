@@ -7,10 +7,15 @@ on:
       working-directory:
         description: "workdir"
         type: string
+        default: "."
       docker-tag:
         description: "docker tag"
-        default: "docker-image:github-actions"
         type: string
+        default: "docker-image:github-actions"
+      dockerfile-name:
+        description: "dockerfile name"
+        type: string
+        default: "Dockerfile"
 
 jobs:
   check-docker:
@@ -33,7 +38,7 @@ jobs:
         env:
           DOCKER_CONTENT_TRUST: 0
         with:
-          dockerfile: ${{ inputs.working-directory }}/Dockerfile
+          dockerfile: ${{ inputs.working-directory }}/${{ inputs.dockerfile-name }}
 
       #----------------------------------------------
       # build docker
