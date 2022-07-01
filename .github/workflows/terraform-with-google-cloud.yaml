@@ -179,7 +179,7 @@ jobs:
 
       - name: Create an issue if apply was failure
         id: create-an-issue-if-apply-was-failure
-        if: ${{ inputs.do-apply && inputs.create-issue && steps.plan.outcome == 'failure' }}
+        if: ${{ inputs.do-apply && inputs.create-issue && steps.apply.outcome == 'failure' }}
         uses: JasonEtco/create-an-issue@v2
         env:
           GITHUB_TOKEN: ${{ secrets.token }}
