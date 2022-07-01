@@ -16,6 +16,8 @@ on:
       tf-vars:
         description: "terraform vars"
         required: true
+      token:
+        description: "GitHub Token used for updating pull request or creating an issue"
     inputs:
       environment-directory:
         description: "environment directory path"
@@ -33,47 +35,18 @@ on:
         description: "lint command"
         type: string
         default: "terraform validate"
-      do-plan:
-        description: "whether to execute plan command"
-        type: boolean
-        default: true
       do-apply:
         description: "whether to execute apply command"
         type: boolean
         default: false
-      continue-on-error-plan:
-        description: "whether to continue on error when running plan step"
+      update-pull-request:
+        description: "whether to update pull request to comment result of plan"
         type: boolean
         default: false
-      continue-on-error-apply:
-        description: "whether to continue on error when running apply step"
+      create-issue:
+        description: "whether to create an issue if apply was failure"
         type: boolean
         default: false
-    outputs:
-      check-format-outcome:
-        description: "outcome of check format step"
-        value: ${{ jobs.terraform.outputs.check-format-outcome }}
-      lint-outcome:
-        description: "outcome of lint step"
-        value: ${{ jobs.terraform.outputs.lint-outcome }}
-      init-outcome:
-        description: "outcome of init step"
-        value: ${{ jobs.terraform.outputs.init-outcome }}
-      plan-outcome:
-        description: "outcome of plan step"
-        value: ${{ jobs.terraform.outputs.plan-outcome }}
-      plan-stdout:
-        description: "stdout of plan step"
-        value: ${{ jobs.terraform.outputs.plan-stdout }}
-      apply-outcome:
-        description: "outcome of apply step"
-        value: ${{ jobs.terraform.outputs.apply-outcome }}
-      apply-stdout:
-        description: "stdout of apply step"
-        value: ${{ jobs.terraform.outputs.apply-stdout }}
-      apply-stderr:
-        description: "stderr of apply step"
-        value: ${{ jobs.terraform.outputs.apply-stderr }}
 
 jobs:
   terraform:
@@ -82,15 +55,8 @@ jobs:
     permissions:
       contents: "read"
       id-token: "write"
-    outputs:
-      check-format-outcome: ${{ steps.check-format.outcome }}
-      lint-outcome: ${{ steps.lint.outcome }}
-      init-outcome: ${{ steps.init.outcome }}
-      plan-outcome: ${{ steps.plan.outcome }}
-      plan-stdout: ${{ steps.plan.outputs.stdout }}
-      apply-outcome: ${{ steps.apply.outcome }}
-      apply-stdout: ${{ steps.apply.outputs.stdout }}
-      apply-stderr: ${{ steps.apply.outputs.stderr }}
+      issues: "write"
+      pull-requests: "write"
     steps:
       #----------------------------------------------
       # check-out repo
@@ -98,6 +64,8 @@ jobs:
       - name: Check out repository
         id: check-out-repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.token }}
 
       #----------------------------------------------
       # authenticate to google cloud & set env
@@ -145,20 +113,84 @@ jobs:
 
       #----------------------------------------------
       # plan
+      # - do plan
+      # - (optional) update pull request
+      # - exist 1 if failure
       #----------------------------------------------
       - name: Plan
         id: plan
-        if: ${{ inputs.do-plan }}
         working-directory: ${{ inputs.environment-directory }}
         run: "terraform plan -no-color"
-        continue-on-error: ${{ inputs.continue-on-error-plan }}
+        continue-on-error: true
+
+      - name: Update pull request
+        id: update-pull-request
+        if: ${{ inputs.update-pull-request && github.event_name == 'pull_request' }}
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.token }}
+          script: |
+            const plan = `${{ steps.plan.outputs.stdout }}`;
+
+            const output = `
+            #### Terraform Check format 🖌\`${{ steps.check-format.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.lint.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`\n
+            ${plan}
+            \`\`\`
+
+            </details>
+
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+      - name: Exit 1 if plan was failure
+        id: exit-1-if-plan-was-failure
+        if: ${{ steps.plan.outcome == 'failure' }}
+        run: exit 1
 
       #----------------------------------------------
       # apply
+      # - do apply
+      # - (optional) create an issue
+      # - exist 1 if failure
       #----------------------------------------------
       - name: Apply
         id: apply
         if: ${{ inputs.do-apply && steps.plan.outcome == 'success' }}
         working-directory: ${{ inputs.environment-directory }}
         run: "terraform apply -auto-approve -no-color"
-        continue-on-error: ${{ inputs.continue-on-error-apply }}
+        continue-on-error: true
+
+      - name: Create an issue if apply was failure
+        id: create-an-issue-if-apply-was-failure
+        if: ${{ inputs.do-apply && inputs.create-issue && steps.apply.outcome == 'failure' }}
+        uses: JasonEtco/create-an-issue@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.token }}
+          ACTOR: ${{ github.actor }}
+          SHA: ${{ github.sha }}
+          ACTIONS_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          APPLY_STDERR: ${{ steps.apply.outputs.stderr }}
+        with:
+          filename: .github/terraform_apply_failure_template.md
+          update_existing: true
+          search_existing: all
+
+      - name: Exit 1 if apply was failure
+        id: exit-1-if-apply-was-failure
+        if: ${{ steps.apply.outcome == 'failure' }}
+        run: exit 1
