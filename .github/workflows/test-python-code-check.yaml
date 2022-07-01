@@ -12,7 +12,7 @@ on:
 
 jobs:
   test-normal:
-    uses: koei-kaji/msa-hands-on-backends/.github/workflows/python-code-check.yaml@a8f50899c06de21cc7b71cad7449b2f77c438150
+    uses: koei-kaji/msa-hands-on-backends/.github/workflows/python-code-check.yaml@$GITHUB_SHA
     with:
       python-version: "3.10.5"
       pip-version: "22.1.2"
