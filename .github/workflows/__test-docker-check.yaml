@@ -6,12 +6,18 @@ on:
       - main
     paths:
       - ".github/workflows/docker-check.yaml"
-      - ".github/workflows/test-docker-check.yaml"
+      - ".github/workflows/__test-docker-check.yaml"
       - "test_stubs/python/**"
+      - "test_stubs/node/**"
       - "!**.md"
 
 jobs:
-  test-normal:
+  test-python:
     uses: ./.github/workflows/docker-check.yaml
     with:
       working-directory: "./test_stubs/python/"
+
+  test-node:
+    uses: ./.github/workflows/docker-check.yaml
+    with:
+      working-directory: "./test_stubs/node/"

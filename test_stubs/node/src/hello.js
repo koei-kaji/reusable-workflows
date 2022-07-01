@@ -1,0 +1,5 @@
+export default function hello() {
+  return "Hello World!";
+}
+
+console.log(hello());

@@ -1,0 +1,20 @@
+name: Test node code check workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/node-code-check.yaml"
+      - ".github/workflows/__test-node-code-check.yaml"
+      - "test_stubs/node/**"
+      - "!**.md"
+
+jobs:
+  test-normal:
+    uses: ./.github/workflows/node-code-check.yaml
+    with:
+      working-directory: "./test_stubs/node/"
+      command-check-format: "npm run format:check"
+      command-lint: "npm run lint"
+      command-test: "npm run test"
