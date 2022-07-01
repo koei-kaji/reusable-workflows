@@ -13,4 +13,5 @@ on:
 jobs:
   test-normal:
     uses: ./.github/workflows/docker-check.yaml
-    working-directory: "./test_stubs/python/"
+    with:
+      working-directory: "./test_stubs/python/"
