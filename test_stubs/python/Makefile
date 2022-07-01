@@ -30,7 +30,8 @@ build-docker:
 
 .PHONY: scan-docker
 scan-docker:
-	@dockle $(DOCKER_TAG)
+	@docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+       goodwithtech/dockle:v0.4.5 --no-color $(DOCKER_TAG)
 	@trivy image --ignore-unfixed $(DOCKER_TAG)
 
 .PHONY: docker
