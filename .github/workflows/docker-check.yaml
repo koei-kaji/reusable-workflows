@@ -46,7 +46,7 @@ jobs:
       - name: Build docker
         id: build-docker
         working-directory: ${{ inputs.working-directory }}
-        run: docker build --no-cache -t ${{ inputs.docker-tag }} .
+        run: docker build --no-cache -t ${{ inputs.docker-tag }} -f ${{ inputs.dockerfile-name }}
 
       #----------------------------------------------
       # scan with dockle
@@ -63,8 +63,7 @@ jobs:
 
       - name: Run dockle
         id: run-dockle
-        working-directory: ${{ inputs.working-directory }}
-        run: dockle --no-color -q ${{ inputs.docker-tag }}
+        run: dockle --no-color ${{ inputs.docker-tag }}
 
       #----------------------------------------------
       # scan with trivy
