@@ -18,7 +18,6 @@ on:
         required: true
       token:
         description: "GitHub Token used for updating pull request or creating an issue"
-        default: ""
     inputs:
       environment-directory:
         description: "environment directory path"
