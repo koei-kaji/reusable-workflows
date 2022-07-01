@@ -122,7 +122,7 @@ jobs:
 
       - name: Update pull request
         id: update-pull-request
-        if: ${{ update-pull-request && github.event_name == 'pull_request' }}
+        if: ${{ inputs.update-pull-request && github.event_name == 'pull_request' }}
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.token }}
