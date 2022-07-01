@@ -60,9 +60,8 @@ jobs:
       #----------------------------------------------
       # scan with trivy
       #----------------------------------------------
-      # FIXME: should not use master tag
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.5.1
         with:
           image-ref: ${{ inputs.docker-tag }}
           format: "table"
