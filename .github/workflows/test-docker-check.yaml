@@ -1,0 +1,16 @@
+name: Test docker check workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/docker-check.yaml"
+      - ".github/workflows/test-docker-check.yaml"
+      - "test_stubs/python/**"
+      - "!**.md"
+
+jobs:
+  test-normal:
+    uses: ./.github/workflows/docker-check.yaml
+    working-directory: "./test_stubs/python/"
