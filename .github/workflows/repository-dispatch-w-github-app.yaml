@@ -1,19 +1,19 @@
 # NOTE: https://docs.github.com/ja/actions/using-workflows/reusing-workflows
-name: Dispatch repository workflow
+name: Repository dispatch with GitHub App workflow
 
 on:
   workflow_call:
     inputs:
       repository:
-        description: "The full name of the repository to send the dispatch"
+        description: "https://github.com/peter-evans/repository-dispatch/blob/v2.0.0/action.yml#L7-L9"
         type: string
         required: true
       event-type:
-        description: "A custom webhook event name"
+        description: "https://github.com/peter-evans/repository-dispatch/blob/v2.0.0/action.yml#L10-L12"
         type: string
         required: true
       client-payload:
-        description: "JSON payload with extra information about the webhook event that your action or workflow may use"
+        description: "https://github.com/peter-evans/repository-dispatch/blob/v2.0.0/action.yml#L13-L15"
         type: string
         default: "{}"
     secrets:
@@ -25,7 +25,7 @@ on:
         required: true
 
 jobs:
-  update-submodules:
+  dispatch:
     runs-on: ubuntu-latest
     steps:
       #----------------------------------------------
