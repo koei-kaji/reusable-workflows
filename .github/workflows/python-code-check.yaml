@@ -10,18 +10,26 @@ on:
       pip-version:
         description: "pip version"
         type: string
+      poetry-version:
+        description: "poetry version"
+        type: string
+        default: "latest"
       working-directory:
         description: "workdir"
         type: string
+        default: "."
       command-check-format:
         description: "format check command"
         type: string
+        required: true
       command-lint:
-        description: "format check command"
+        description: "lint command"
         type: string
+        required: true
       command-test:
-        description: "format check command"
+        description: "test command"
         type: string
+        required: true
 
 jobs:
   check-code:
@@ -47,6 +55,7 @@ jobs:
         id: install-poetry
         uses: snok/install-poetry@v1
         with:
+          version: ${{ inputs.poetry-version }}
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
