@@ -11,10 +11,10 @@ on:
         description: "format check command"
         type: string
       command-lint:
-        description: "format check command"
+        description: "lint command"
         type: string
       command-test:
-        description: "format check command"
+        description: "test command"
         type: string
 
 jobs:
