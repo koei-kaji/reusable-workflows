@@ -18,6 +18,7 @@ on:
         required: true
       token:
         description: "GitHub Token used for updating pull request or creating an issue"
+        default: ""
     inputs:
       environment-directory:
         description: "environment directory path"
@@ -63,6 +64,8 @@ jobs:
       - name: Check out repository
         id: check-out-repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.token }}
 
       #----------------------------------------------
       # authenticate to google cloud & set env
