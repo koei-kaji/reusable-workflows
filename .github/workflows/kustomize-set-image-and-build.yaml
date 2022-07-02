@@ -133,7 +133,7 @@ jobs:
       - name: Create Pull request
         uses: peter-evans/create-pull-request@v4
         # if: ${{ !inputs.pushes-auto && steps.get-git-status.output.status }}
-        if: ${{ steps.get-git-status.output.status }}
+        if: ${{ steps.get-git-status.outputs.status }}
         with:
           token: ${{ secrets.token }}
           commit-message: "chore: update image"
