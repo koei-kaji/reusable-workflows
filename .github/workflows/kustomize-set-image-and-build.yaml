@@ -137,7 +137,7 @@ jobs:
           echo "${{ inputs.pushes-auto == false }}"
           echo "${{ !(inputs.pushes-auto) }}"
           echo "${{ steps.get-git-status.outputs.status }}"
-          echo "${{ steps.get-git-status.outputs.status == "" }}"
+          echo "${{ steps.get-git-status.outputs.status == '' }}"
           echo "${{ !(inputs.pushes-auto) && steps.get-git-status.outputs.status }}"
           echo "${{ !(inputs.pushes-auto) && steps.get-git-status.outputs.status == '' }}"
 
