@@ -131,6 +131,9 @@ jobs:
           git commit --author=. -m 'chore: kustmoize patch'
           git push
 
+      - name: DEBUG
+        run: echo "${{ inputs.pushes-auto }}"
+
       - name: Create Pull request
         uses: peter-evans/create-pull-request@v4
         if: ${{ inputs.pushes-auto == 0 && steps.get-git-status.outputs.status }}
