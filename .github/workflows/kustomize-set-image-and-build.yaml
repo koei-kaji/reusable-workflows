@@ -70,6 +70,17 @@ jobs:
           echo "$HOME/kustomize" >> $GITHUB_PATH
 
       #----------------------------------------------
+      # install kubeval
+      # https://www.kubeval.com/installation/
+      #----------------------------------------------
+      - name: Install kubeval
+        id: install-kubeval
+        run: |
+          wget https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
+          tar xf kubeval-linux-amd64.tar.gz
+          echo "$HOME/kubeval" >> $GITHUB_PATH
+
+      #----------------------------------------------
       # update image with kustomize
       #----------------------------------------------
       - name: Update image with kustomize
@@ -85,17 +96,6 @@ jobs:
         id: build-yaml-with-kustomize
         if: ${{ inputs.builds-yaml }}
         run: kustomize build ${{ inputs.input-build-directory }} > ${{ inputs.output-build-filepath }}
-
-      #----------------------------------------------
-      # install kubeval
-      # https://www.kubeval.com/installation/
-      #----------------------------------------------
-      - name: Install kubeval
-        id: install-kubeval
-        run: |
-          wget https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
-          tar xf kubeval-linux-amd64.tar.gz
-          echo "$HOME/kubeval" >> $GITHUB_PATH
 
       #----------------------------------------------
       # validate k8s yaml with kubeval
