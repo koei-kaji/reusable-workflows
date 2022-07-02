@@ -98,7 +98,7 @@ jobs:
         id: validate-yaml-with-kubeval
         if: ${{ inputs.builds-yaml }}
         run: |
-          docker run --rm -it \
+          docker run --rm -i \
             -v `pwd`/${{ inputs.output-build-filepath }}:/${{ inputs.output-build-filepath }} \
             garethr/kubeval \
             --schema-location https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master \
