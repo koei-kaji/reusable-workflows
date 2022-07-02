@@ -90,40 +90,20 @@ jobs:
         run: kustomize build ${{ inputs.input-build-directory }} > ${{ inputs.output-build-filepath }}
 
       #----------------------------------------------
-      # install kubeval & validate
-      # https://www.kubeval.com/installation/
-      #----------------------------------------------
-      - name: Install kubeval
-        id: install-kubeval
-        if: ${{ inputs.builds-yaml }}
-        run: |
-          mkdir tmp && cd ./tmp/
-          wget https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
-          tar xf kubeval-linux-amd64.tar.gz
-          echo "$HOME/tmp/kubeval" >> $GITHUB_PATH
-          kubeval  --version
-
-      #----------------------------------------------
       # validate k8s yaml with kubeval
+      # https://www.kubeval.com/installation/
       # https://github.com/instrumenta/kubeval/issues/301#issuecomment-1079674123
       #----------------------------------------------
       - name: Validate yaml with kubeval
         id: validate-yaml-with-kubeval
         if: ${{ inputs.builds-yaml }}
         run: |
-          kubeval \
+          docker run --rm -it \
+            -v `pwd`/${{ inputs.output-build-filepath }}:/${{ inputs.output-build-filepath }} \
+            garethr/kubeval \
             --schema-location https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master \
             --ignore-missing-schemas \
-            ${{ inputs.output-build-filepath }}
-
-      #----------------------------------------------
-      # remove kubeval
-      #----------------------------------------------
-      - name: Remove kubeval
-        id: remove-kubeval
-        if: ${{ inputs.builds-yaml }}
-        run: |
-          rm -rf ./tmp/
+            /${{ inputs.output-build-filepath }}
 
       #----------------------------------------------
       # get git status to check diff
