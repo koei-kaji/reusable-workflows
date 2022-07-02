@@ -140,10 +140,11 @@ jobs:
           echo "${{ steps.get-git-status.outputs.status == '' }}"
           echo "${{ !(inputs.pushes-auto) && steps.get-git-status.outputs.status }}"
           echo "${{ !(inputs.pushes-auto) && steps.get-git-status.outputs.status == '' }}"
+          echo "${{ inputs.pushes-auto == false && steps.get-git-status.outputs.status == '' }}"
 
       - name: Create Pull request
         uses: peter-evans/create-pull-request@v4
-        if: ${{ !(inputs.pushes-auto) && steps.get-git-status.outputs.status == '' }}
+        if: ${{ inputs.pushes-auto == false && steps.get-git-status.outputs.status == '' }}
         with:
           token: ${{ secrets.token }}
           commit-message: "chore: update image"
