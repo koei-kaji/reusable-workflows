@@ -3,3 +3,7 @@ kind: Kustomization
 
 resources:
 - ../../base
+images:
+- name: nginx
+  newName: test-workflow
+  newTag: 24e8b940e1fa9172359fdac6b0e1c48c5118f7e1
