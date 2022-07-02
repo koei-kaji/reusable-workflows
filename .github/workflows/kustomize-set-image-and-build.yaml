@@ -58,11 +58,11 @@ jobs:
       # NOTE: https://github.com/marketplace/actions/action-github-app-token
       - name: Get GitHub App token
         id: get-github-app-token
-        if: secrets.app-id && secrets.private-key
         uses: tibdex/github-app-token@v1
         with:
           app_id: ${{ secrets.app-id }}
           private_key: ${{ secrets.private-key }}
+        continue-on-error: true
 
       - name: Set env token
         id: set-env-token
