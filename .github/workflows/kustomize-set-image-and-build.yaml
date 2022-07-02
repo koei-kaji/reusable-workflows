@@ -133,7 +133,7 @@ jobs:
 
       - name: Create Pull request
         uses: peter-evans/create-pull-request@v4
-        if: ${{ inputs.pushes-auto == false && steps.get-git-status.outputs.status }}
+        if: ${{ inputs.pushes-auto == 'false' && steps.get-git-status.outputs.status }}
         with:
           token: ${{ secrets.token }}
           commit-message: "chore: update image"
@@ -143,7 +143,7 @@ jobs:
           delete-branch: true
           title: "[kustomize] build ${{ inputs.input-build-directory }}"
           body: |
-            #### Update image: `${{ inputs.updates-image }}
+            #### Update image: `${{ inputs.updates-image }}`
 
             - directory: `${{ inputs.image-set-directory }}` 
             - name: `${{ inputs.image-set-directory }}` 
