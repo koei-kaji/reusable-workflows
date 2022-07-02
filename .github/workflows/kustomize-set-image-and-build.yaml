@@ -133,7 +133,7 @@ jobs:
           commit-message: "chore: update image"
           author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
           branch: "kustomize/patch"
-          branch-suffix: "timestamp"
+          branch-suffix: "random"
           delete-branch: true
           title: "[kustomize] ${{ (inputs.updates-image && 'update image') || '' }}${{ (inputs.updates-image && inputs.builds-yaml  && ' & ') || '' }}${{ (inputs.builds-yaml && 'build yaml') || '' }}"
           body: |
