@@ -1,0 +1,16 @@
+name: Test submodules update workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/submodules-update.yaml"
+      - ".github/workflows/__test-submodules-update.yaml"
+      - "!**.md"
+
+jobs:
+  test-normal:
+    uses: ./.github/workflows/submodules-update.yaml
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
