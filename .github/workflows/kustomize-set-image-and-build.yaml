@@ -77,7 +77,7 @@ jobs:
         id: install-kubeval
         run: |
           wget https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
-          tar xf kubeval-linux-amd64.tar.gz
+          tar xf kubeval-linux-amd64.tar.gz && rm kubeval-linux-amd64.tar.gz
           echo "$HOME/kubeval" >> $GITHUB_PATH
 
       #----------------------------------------------
@@ -132,7 +132,7 @@ jobs:
 
       - name: Create Pull request
         uses: peter-evans/create-pull-request@v4
-        if: ${{ (!inputs.pushes-auto) && steps.get-git-status.output.status }}
+        if: ${{ !inputs.pushes-auto && steps.get-git-status.output.status }}
         with:
           token: ${{ secrets.token }}
           commit-message: "chore: update image"
