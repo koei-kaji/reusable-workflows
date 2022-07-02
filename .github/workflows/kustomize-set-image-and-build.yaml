@@ -17,11 +17,9 @@ on:
       image-set-directory:
         description: "image set directory"
         type: string
-        default: ""
       image-set-name:
         description: "target image name"
         type: string
-        default: ""
       builds-yaml:
         description: "whether to build yaml with kustomize"
         type: boolean
