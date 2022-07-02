@@ -54,15 +54,15 @@ jobs:
       #----------------------------------------------
       # check-out repo & set-up python
       #----------------------------------------------
-+     - if: ${{ github.event_name == 'push' }} 
-+       uses: actions/checkout@v3
+      - if: ${{ github.event_name == 'push' }}
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.token }}
-          
-+     - if: ${{ github.event_name == 'pull_request' }} 
-+       uses: actions/checkout@v3
-+       with:
-+         ref: ${{ github.head_ref }}
+
+      - if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
           token: ${{ secrets.token }}
 
       #----------------------------------------------
