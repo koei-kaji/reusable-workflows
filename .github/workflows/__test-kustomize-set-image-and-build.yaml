@@ -36,4 +36,4 @@ jobs:
       image-set-name: "nginx"
       builds-yaml: true
       input-build-directory: "./test_stubs/kustomize/overlays/dummy/"
-      output-build-directory: "./test_stubs/kustomize/.assets/"
+      output-build-filepath: "./test_stubs/kustomize/.assets/dummy.yaml"
