@@ -76,8 +76,9 @@ jobs:
       - name: Install kubeval
         id: install-kubeval
         run: |
+          mkdir tmp && cd ./tmp/
           wget https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
-          tar xf kubeval-linux-amd64.tar.gz && rm kubeval-linux-amd64.tar.gz
+          tar xf kubeval-linux-amd64.tar.gz && cd .. && rm -rf ./tmp/
           echo "$HOME/kubeval" >> $GITHUB_PATH
 
       #----------------------------------------------
