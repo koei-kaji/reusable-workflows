@@ -7,7 +7,11 @@ on:
     paths:
       - ".github/workflows/kustomize-set-image-and-build.yaml"
       - ".github/workflows/__test-kustomize-set-image-and-build.yaml"
+      - "test_stubs/kustomize/**"
       - "!**.md"
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 1 * *"
 
 jobs:
   test-nothing:

@@ -9,6 +9,9 @@ on:
       - ".github/workflows/__test-python-code-check.yaml"
       - "test_stubs/python/**"
       - "!**.md"
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 1 * *"
 
 jobs:
   test-normal:
