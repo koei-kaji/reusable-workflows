@@ -135,12 +135,12 @@ jobs:
           branch: "kustomize/patch"
           branch-suffix: "short-commit-hash"
           delete-branch: true
-          title: "[kustomize] build ${{ inputs.input-build-directory }}"
+          title: "[kustomize] ${{ inputs.updates-image && 'update image' }}${{ inputs.updates-image && inputs.builds-yaml  && ' & ' }}${{ inputs.builds-yaml && 'build yaml' }}"
           body: |
             #### Update image: `${{ inputs.updates-image }}`
 
             - directory: `${{ inputs.image-set-directory }}` 
-            - name: `${{ inputs.image-set-directory }}` 
+            - name: `${{ inputs.image-set-name }}` 
             - set tag: `${{ secrets.docker-tag }}`
 
             #### Build a set of KRM resources: `${{ inputs.builds-yaml }}`
