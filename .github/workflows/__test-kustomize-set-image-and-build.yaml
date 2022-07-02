@@ -46,3 +46,14 @@ jobs:
       builds-yaml: true
       input-build-directory: "./test_stubs/kustomize/overlays/dummy/"
       output-build-filepath: "./test_stubs/kustomize/.assets/dummy.yaml"
+
+  test-update-push:
+    uses: ./.github/workflows/kustomize-set-image-and-build.yaml
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+      docker-tag: test-workflow:${{ github.sha }}
+    with:
+      updates-image: true
+      image-set-directory: "./test_stubs/kustomize/overlays/dummy/"
+      image-set-name: "nginx"
+      pushes-auto: true
