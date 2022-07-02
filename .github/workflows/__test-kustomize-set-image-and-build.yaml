@@ -1,0 +1,16 @@
+name: Test kustomize set image & build workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/kustomize-set-image-and-build.yaml"
+      - ".github/workflows/__test-kustomize-set-image-and-build.yaml"
+      - "!**.md"
+
+jobs:
+  test-normal:
+    uses: ./.github/workflows/submodules-update.yaml
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
