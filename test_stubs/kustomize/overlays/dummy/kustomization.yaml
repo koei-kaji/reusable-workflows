@@ -6,4 +6,4 @@ resources:
 images:
 - name: nginx
   newName: test-workflow
-  newTag: 178673820b3c7e79f09c608a46db7830904ccac9
+  newTag: 627d8dfbcbbec65dd00723f7d2df73828210c678
