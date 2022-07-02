@@ -1,0 +1,136 @@
+# NOTE: https://docs.github.com/ja/actions/using-workflows/reusing-workflows
+name: Kustomize set image & build workflow
+
+on:
+  workflow_call:
+    secrets:
+      token:
+        description: |
+          GitHub Token.
+          If you create pull request to another repository,
+          you might be better using GitHub App.
+        required: true
+      docker-tag:
+        description: "docker tag"
+        required: true
+    inputs:
+      updates-image:
+        description: "whether to set image with kustomize"
+        type: boolean
+        default: false
+      image-set-directory:
+        description: "image set directory"
+        type: string
+        default: ""
+      image-set-name:
+        description: "target image name"
+        type: string
+        default: ""
+      builds-yaml:
+        description: "whether to build yaml with kustomize"
+        type: boolean
+        default: false
+      input-build-directory:
+        description: "build input directory"
+        type: string
+        default: "."
+      output-build-filepath:
+        description: "build output file name"
+        type: string
+        default: "./build/build.yaml"
+      pushes-auto:
+        description: |
+          Whether to push automatically after kustmoize command.
+          If false, create pull request alternatively.
+        type: boolean
+        default: false
+
+jobs:
+  kustomize-edit-pull-request:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "write"
+      pull-requests: "write"
+    steps:
+      #----------------------------------------------
+      # check-out repo & set-up python
+      #----------------------------------------------
+      - name: Check out repository
+        id: check-out-repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.token }}
+
+      #----------------------------------------------
+      # install kustomize
+      #----------------------------------------------
+      - name: Install kustomize
+        id: install-kustomize
+        run: |
+          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+          echo "$HOME/kustomize" >> $GITHUB_PATH
+
+      #----------------------------------------------
+      # update image with kustomize
+      #----------------------------------------------
+      - name: Update image with kustomize
+        id: update-image-with-kustomize
+        if: ${{ inputs.updates-image }}
+        working-directory: ${{ inputs.image-set-directory }}
+        run: kustomize edit set image ${{ inputs.image-set-name }}=${{ secrets.docker-tag }}
+
+      #----------------------------------------------
+      # build yaml with kustomize
+      #----------------------------------------------
+      - name: Build yaml with kustomize
+        id: build-yaml-with-kustomize
+        if: ${{ inputs.builds-yaml }}
+        run: kustomize build ${{ inputs.input-build-directory }} > ${{ inputs.output-build-filepath }}
+
+      # TODO: kubeval
+
+      #----------------------------------------------
+      # get git status to check diff
+      #----------------------------------------------
+      - name: Get git status
+        id: get-git-status
+        run: echo "::set-output name=status::$(git status -s)"
+
+      #----------------------------------------------
+      # push or create pull request
+      #----------------------------------------------
+      - name: Commit and push
+        id: commit-and-push
+        if: ${{ inputs.pushes-auto && steps.get-git-status.output.status }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -u .
+          git commit --author=. -m 'chore: kustmoize patch'
+          git push
+
+      - name: Create Pull request
+        uses: peter-evans/create-pull-request@v4
+        if: ${{ (!inputs.pushes-auto) && steps.get-git-status.output.status }}
+        with:
+          token: ${{ secrets.token }}
+          commit-message: "chore: update image"
+          author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+          branch: "kustomize/patch"
+          branch-suffix: "short-commit-hash"
+          delete-branch: true
+          title: "[kustomize] build ${{ inputs.input-build-directory }}"
+          body: |
+            #### Update image: `${{ inputs.updates-image }}
+
+            - directory: `${{ inputs.image-set-directory }}` 
+            - name: `${{ inputs.image-set-directory }}` 
+            - set tag: `${{ secrets.docker-tag }}`
+
+            #### Build a set of KRM resources: `${{ inputs.builds-yaml }}`
+
+            - build input: `${{ inputs.input-build-directory }}`
+            - build output: `${{ inputs.output-build-filepath }}`
+
+          labels: |
+            kustomize
