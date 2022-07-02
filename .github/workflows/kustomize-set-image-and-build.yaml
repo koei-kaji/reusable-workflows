@@ -52,12 +52,12 @@ jobs:
       #----------------------------------------------
       # check-out repo & set-up python
       #----------------------------------------------
-      - if: ${{ github.event_name == 'push' }}
+      - if: contains(fromJson('["push", "schedule", "workflow_dispatch"]'), github.event_name)
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.token }}
 
-      - if: ${{ github.event_name == 'pull_request' }}
+      - if: contains(fromJson('["pull_request"]'), github.event_name)
         uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
