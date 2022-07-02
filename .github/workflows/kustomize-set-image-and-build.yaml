@@ -9,7 +9,10 @@ on:
           GitHub Token.
           If you create pull request to another repository,
           you might be better using GitHub App.
-        required: true
+      app-id:
+        description: "GitHub App ID"
+      private-key:
+        description: "GitHub App Private Key"
       docker-tag:
         description: "docker tag"
     inputs:
@@ -50,18 +53,35 @@ jobs:
       pull-requests: "write"
     steps:
       #----------------------------------------------
-      # check-out repo & set-up python
+      # set env TOKEN
       #----------------------------------------------
-      - if: contains(fromJson('["push", "schedule", "workflow_dispatch"]'), github.event_name)
+      # NOTE: https://github.com/marketplace/actions/action-github-app-token
+      - name: Get GitHub App token
+        id: get-github-app-token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.app-id }}
+          private_key: ${{ secrets.private-key }}
+        continue-on-error: true
+
+      - name: Set env token
+        id: set-env-token
+        run: |
+          echo 'TOKEN=${{ steps.get-github-app-token.outputs.token  || secrets.token }}' >> $GITHUB_ENV
+
+      #----------------------------------------------
+      # check-out repo
+      #----------------------------------------------
+      - if: contains(fromJson('["push", "schedule", "workflow_dispatch", "repository_dispatch"]'), github.event_name)
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.token }}
+          token: ${{ env.TOKEN }}
 
       - if: contains(fromJson('["pull_request"]'), github.event_name)
         uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
-          token: ${{ secrets.token }}
+          token: ${{ env.TOKEN }}
 
       #----------------------------------------------
       # install kustomize
@@ -129,7 +149,7 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         if: ${{ inputs.pushes-auto == false && steps.get-git-status.outputs.status != '' }}
         with:
-          token: ${{ secrets.token }}
+          token: ${{ env.TOKEN }}
           commit-message: "chore: update image"
           author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
           branch: "kustomize/patch"
