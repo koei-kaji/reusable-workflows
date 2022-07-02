@@ -1,0 +1,48 @@
+name: Test kustomize set image & build workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/kustomize-set-image-and-build.yaml"
+      - ".github/workflows/__test-kustomize-set-image-and-build.yaml"
+      - "!**.md"
+
+jobs:
+  test-nothing:
+    uses: ./.github/workflows/kustomize-set-image-and-build.yaml
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+
+  test-update-pr:
+    uses: ./.github/workflows/kustomize-set-image-and-build.yaml
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+      docker-tag: test-workflow:${{ github.sha }}
+    with:
+      updates-image: true
+      image-set-directory: "./test_stubs/kustomize/overlays/dummy/"
+      image-set-name: "nginx"
+
+  test-build-pr:
+    uses: ./.github/workflows/kustomize-set-image-and-build.yaml
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      builds-yaml: true
+      input-build-directory: "./test_stubs/kustomize/overlays/dummy/"
+      output-build-filepath: "./test_stubs/kustomize/.assets/dummy.yaml"
+
+  test-update-and-build-pr:
+    uses: ./.github/workflows/kustomize-set-image-and-build.yaml
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+      docker-tag: test-workflow:${{ github.sha }}
+    with:
+      updates-image: true
+      image-set-directory: "./test_stubs/kustomize/overlays/dummy/"
+      image-set-name: "nginx"
+      builds-yaml: true
+      input-build-directory: "./test_stubs/kustomize/overlays/dummy/"
+      output-build-filepath: "./test_stubs/kustomize/.assets/dummy.yaml"
