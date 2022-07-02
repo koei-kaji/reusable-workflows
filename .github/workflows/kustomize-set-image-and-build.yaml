@@ -6,6 +6,7 @@ on:
     secrets:
       token:
         description: "GitHub Token"
+        required: true
       docker-tag:
         description: "docker tag"
     inputs:
