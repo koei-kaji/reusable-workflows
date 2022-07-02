@@ -135,6 +135,7 @@ jobs:
         run: |
           echo "${{ inputs.pushes-auto }}"
           echo "${{ inputs.pushes-auto == false }}"
+          echo "${{ !(inputs.pushes-auto) }}"
 
       - name: Create Pull request
         uses: peter-evans/create-pull-request@v4
