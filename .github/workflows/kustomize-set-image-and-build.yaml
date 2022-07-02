@@ -32,11 +32,9 @@ on:
       input-build-directory:
         description: "build input directory"
         type: string
-        default: "."
       output-build-filepath:
         description: "build output file name"
         type: string
-        default: "./build/build.yaml"
       pushes-auto:
         description: |
           Whether to push automatically after kustmoize command.
@@ -109,7 +107,7 @@ jobs:
       #----------------------------------------------
       - name: Validate yaml with kubeval
         id: validate-yaml-with-kubeval
-        if: ${{ inputs.build-yaml }}
+        if: ${{ inputs.builds-yaml }}
         run: |
           kubeval \
             --schema-location https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master \
@@ -135,18 +133,6 @@ jobs:
           git add -u .
           git commit --author=. -m 'chore: kustmoize patch'
           git push
-
-      - name: DEBUG
-        run: |
-          echo "${{ inputs.pushes-auto }}"
-          echo "${{ inputs.pushes-auto == false }}"
-          echo "${{ !(inputs.pushes-auto) }}"
-          echo "${{ steps.get-git-status.outputs.status }}"
-          echo "${{ steps.get-git-status.outputs.status == '' }}"
-          echo "${{ !(inputs.pushes-auto) && steps.get-git-status.outputs.status }}"
-          echo "${{ !(inputs.pushes-auto) && steps.get-git-status.outputs.status == '' }}"
-          echo "${{ inputs.pushes-auto == false && steps.get-git-status.outputs.status == '' }}"
-          echo "${{ (inputs.pushes-auto == false) && (steps.get-git-status.outputs.status != '') }}"
 
       - name: Create Pull request
         uses: peter-evans/create-pull-request@v4
