@@ -12,7 +12,6 @@ on:
         required: true
       docker-tag:
         description: "docker tag"
-        required: true
     inputs:
       updates-image:
         description: "whether to set image with kustomize"
