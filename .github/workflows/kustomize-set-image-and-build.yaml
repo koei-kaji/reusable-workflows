@@ -86,7 +86,29 @@ jobs:
         if: ${{ inputs.builds-yaml }}
         run: kustomize build ${{ inputs.input-build-directory }} > ${{ inputs.output-build-filepath }}
 
-      # TODO: kubeval
+      #----------------------------------------------
+      # install kubeval
+      # https://www.kubeval.com/installation/
+      #----------------------------------------------
+      - name: Install kubeval
+        id: install-kubeval
+        run: |
+          wget https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
+          tar xf kubeval-linux-amd64.tar.gz
+          echo "$HOME/kubeval" >> $GITHUB_PATH
+
+      #----------------------------------------------
+      # validate k8s yaml with kubeval
+      # https://github.com/instrumenta/kubeval/issues/301#issuecomment-1079674123
+      #----------------------------------------------
+      - name: Validate yaml with kubeval
+        id: validate-yaml-with-kubeval
+        if: ${{ inputs.build-yaml }}
+        run: |
+          kubeval \
+            --schema-location https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master \
+            --ignore-missing-schemas \
+            ${{ inputs.output-build-filepath }}
 
       #----------------------------------------------
       # get git status to check diff
