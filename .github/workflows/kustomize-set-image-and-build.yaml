@@ -135,7 +135,7 @@ jobs:
           branch: "kustomize/patch"
           branch-suffix: "timestamp"
           delete-branch: true
-          title: "[kustomize] ${{ inputs.updates-image && 'update image' }}${{ inputs.updates-image && inputs.builds-yaml  && ' & ' }}${{ inputs.builds-yaml && 'build yaml' }}"
+          title: "[kustomize] ${{ (inputs.updates-image && 'update image') || '' }}${{ (inputs.updates-image && inputs.builds-yaml  && ' & ') || '' }}${{ (inputs.builds-yaml && 'build yaml') || '' }}"
           body: |
             #### Update image: `${{ inputs.updates-image }}`
 
