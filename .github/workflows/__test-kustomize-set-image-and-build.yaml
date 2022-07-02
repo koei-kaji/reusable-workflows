@@ -11,6 +11,6 @@ on:
 
 jobs:
   test-normal:
-    uses: ./.github/workflows/submodules-update.yaml
+    uses: ./.github/workflows/kustomize-set-image-and-build.yaml
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
