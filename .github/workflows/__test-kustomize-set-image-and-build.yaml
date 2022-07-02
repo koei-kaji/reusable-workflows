@@ -10,7 +10,17 @@ on:
       - "!**.md"
 
 jobs:
-  test-normal:
+  test-nothing:
     uses: ./.github/workflows/kustomize-set-image-and-build.yaml
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
+
+  test-update-image-pr:
+    uses: ./.github/workflows/kustomize-set-image-and-build.yaml
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+      docker-tag: test-workflow:${{ github:sha }}
+    with:
+      updates-image: true
+      image-set-directory: "./test_stubs/kustomize/overlays/dummy/"
+      image-set-name: "nginx"
