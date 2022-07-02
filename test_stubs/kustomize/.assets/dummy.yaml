@@ -13,7 +13,7 @@ spec:
         app: nginx
     spec:
       containers:
-      - image: nginx
+      - image: test-workflow:82c439fb2f25878d76be0c35f13a1874691b70ca
         name: nginx
         ports:
         - containerPort: 80
