@@ -10,10 +10,7 @@ on:
       - "!**.md"
 
 jobs:
-  test-without-token:
-    uses: ./.github/workflows/submodules-update.yaml
-
-  test-with-token:
+  test-normal:
     uses: ./.github/workflows/submodules-update.yaml
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
