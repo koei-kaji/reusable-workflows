@@ -101,6 +101,7 @@ jobs:
           wget https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
           tar xf kubeval-linux-amd64.tar.gz
           echo "$HOME/tmp/kubeval" >> $GITHUB_PATH
+          kubeval  --version
 
       #----------------------------------------------
       # validate k8s yaml with kubeval
