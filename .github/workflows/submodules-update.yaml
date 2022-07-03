@@ -5,15 +5,33 @@ on:
   workflow_call:
     secrets:
       token:
-        description: |
-          GitHub Token.
-          If private repository is included as submodules,
-          you might be better using GitHub App.
+        description: "GitHub Token"
+      app-id:
+        description: "GitHub App ID"
+      private-key:
+        description: "GitHub App private key"
 
 jobs:
   update-submodules:
     runs-on: ubuntu-latest
     steps:
+      #----------------------------------------------
+      # set env TOKEN
+      #----------------------------------------------
+      # NOTE: https://github.com/marketplace/actions/action-github-app-token
+      - name: Get GitHub App token
+        id: get-github-app-token
+        uses: getsentry/action-github-app-token@v1
+        with:
+          app_id: ${{ secrets.app-id }}
+          private_key: ${{ secrets.private-key }}
+        continue-on-error: true
+
+      - name: Set env token
+        id: set-env-token
+        run: |
+          echo 'TOKEN=${{ steps.get-github-app-token.outputs.token  || secrets.token }}' >> $GITHUB_ENV
+
       #----------------------------------------------
       # check-out repo
       #----------------------------------------------
@@ -22,7 +40,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: recursive
-          token: ${{ secrets.token }}
+          token: ${{ env.TOKEN }}
 
       #----------------------------------------------
       # update submodules
