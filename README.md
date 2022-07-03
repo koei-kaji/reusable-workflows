@@ -16,6 +16,6 @@ A collection of reusable workflows of GitHub Actions.
 - [node-code-check](./docs/node-code-check.md)
 - [pushing-docker-to-gcr](./docs/pushing-docker-to-gcr.md)
 - [python-code-check](./docs/python-code-check.md)
-- [repository-dispatch-w-github-app](./docs/repository-dispatch.md)
+- [repository-dispatch](./docs/repository-dispatch.md)
 - [submodules-update](./docs/submodules-update.md)
 - [terraform-with-google-cloud](./docs/terraform-with-google-cloud.md)
