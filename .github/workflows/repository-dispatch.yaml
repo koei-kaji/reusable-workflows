@@ -1,8 +1,15 @@
 # NOTE: https://docs.github.com/ja/actions/using-workflows/reusing-workflows
-name: Repository dispatch with GitHub App workflow
+name: Repository dispatch workflow
 
 on:
   workflow_call:
+    secrets:
+      token:
+        description: "GitHub Token"
+      app-id:
+        description: "GitHub App ID"
+      private-key:
+        description: "GitHub App private key"
     inputs:
       repository:
         description: "https://github.com/peter-evans/repository-dispatch/blob/v2.0.0/action.yml#L7-L9"
@@ -16,20 +23,13 @@ on:
         description: "https://github.com/peter-evans/repository-dispatch/blob/v2.0.0/action.yml#L13-L15"
         type: string
         default: "{}"
-    secrets:
-      app-id:
-        description: "GitHub App ID"
-        required: true
-      private-key:
-        description: "GitHub App private key"
-        required: true
 
 jobs:
   dispatch:
     runs-on: ubuntu-latest
     steps:
       #----------------------------------------------
-      # get GitHub App token
+      # set env TOKEN
       #----------------------------------------------
       # NOTE: https://github.com/marketplace/actions/action-github-app-token
       - name: Get GitHub App token
@@ -38,6 +38,12 @@ jobs:
         with:
           app_id: ${{ secrets.app-id }}
           private_key: ${{ secrets.private-key }}
+        continue-on-error: true
+
+      - name: Set env token
+        id: set-env-token
+        run: |
+          echo 'TOKEN=${{ steps.get-github-app-token.outputs.token  || secrets.token }}' >> $GITHUB_ENV
 
       #----------------------------------------------
       # check-out repo
@@ -54,7 +60,7 @@ jobs:
         id: repository-dispatch
         uses: peter-evans/repository-dispatch@v2
         with:
-          token: ${{ steps.get-github-app-token.outputs.token }}
+          token: ${{ env.TOKEN }}
           repository: ${{ inputs.repository }}
           event-type: ${{ inputs.event-type }}
           client-payload: ${{ inputs.client-payload }}
