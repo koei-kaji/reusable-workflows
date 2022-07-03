@@ -1,0 +1,24 @@
+name: Test repository dispatch workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/repository-dispatch.yaml"
+      - ".github/workflows/__test-repository-dispatch.yaml"
+      - ".github/workflows/__test-stub-repository-dispatch.yaml"
+      - "!**.md"
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 1 * *"
+
+jobs:
+  test-normal:
+    uses: ./.github/workflows/repository-dispatch.yaml
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      repository: ${{ github.repository }}
+      event-type: "hello"
+      client-payload: '{"hello": "world"}'

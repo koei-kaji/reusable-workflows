@@ -1,0 +1,14 @@
+name: Test stub for repository dispatch workflow
+on:
+  repository_dispatch:
+    types: [hello]
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello
+        run: |
+          echo "Hello World!"
+          echo "event type: ${{ github.event.action }}"
+          echo "client payload: ${{ github.event.client_payload }}"
