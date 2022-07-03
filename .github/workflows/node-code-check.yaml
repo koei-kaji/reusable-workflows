@@ -7,15 +7,19 @@ on:
       working-directory:
         description: "workdir"
         type: string
+        default: "."
       command-check-format:
         description: "format check command"
         type: string
+        default: "npm run format:check"
       command-lint:
         description: "lint command"
         type: string
+        default: "npm run lint"
       command-test:
         description: "test command"
         type: string
+        default: "npm run test"
 
 jobs:
   check-code:
