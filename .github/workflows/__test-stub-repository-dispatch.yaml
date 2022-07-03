@@ -2,9 +2,10 @@ name: Test stub for repository dispatch workflow
 on:
   repository_dispatch:
     types: [hello]
+  workflow_dispatch:
 
 jobs:
-  stale:
+  hello:
     runs-on: ubuntu-latest
     steps:
       - name: Hello
