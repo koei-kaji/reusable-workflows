@@ -13,6 +13,8 @@ on:
       backend-gcs:
         description: "backend gcs bucket name"
         required: true
+      # TODO: be more flexible and useful
+      # ref. https://docs.github.com/ja/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
       tf-vars:
         description: "terraform vars"
         required: true
@@ -27,7 +29,7 @@ on:
         description: "terraform version"
         type: string
         required: true
-      comamnd-check-format:
+      command-check-format:
         description: "format check command"
         type: string
         default: "terraform fmt -recursive -check"
