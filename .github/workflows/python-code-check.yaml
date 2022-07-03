@@ -7,9 +7,6 @@ on:
       python-version:
         description: "python version"
         type: string
-      pip-version:
-        description: "pip version"
-        type: string
       poetry-version:
         description: "poetry version"
         type: string
