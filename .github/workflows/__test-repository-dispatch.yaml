@@ -7,7 +7,6 @@ on:
     paths:
       - ".github/workflows/repository-dispatch.yaml"
       - ".github/workflows/__test-repository-dispatch.yaml"
-      - ".github/workflows/__test-stub-repository-dispatch.yaml"
       - "!**.md"
   workflow_dispatch:
   schedule:
