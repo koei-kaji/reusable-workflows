@@ -1,4 +1,4 @@
-# python-code-check
+# [python-code-check]
 
 This workflow is intended to inspect for python codes.  
 It is assumed that using [poetry].  
@@ -26,7 +26,7 @@ It is assumed that using [poetry].
 ## Workflow inputs
 
 | Name                   | Description                                                         | Default  |
-|------------------------|---------------------------------------------------------------------|----------|
+| ---------------------- | ------------------------------------------------------------------- | -------- |
 | `python-version`       | Python version.                                                     | -        |
 | `poetry-version`       | Poetry version                                                      | `latest` |
 | `working-directory`    | Relative directory path under `GITHUB_WORKSPACE` to the repository. | `.`      |
@@ -44,6 +44,8 @@ Nothing.
 - [actions/setup-python]
 - [snok/install-poetry]
 - [actions/cache]
+
+[python-code-check]: ../.github/workflows/python-code-check.yaml
 
 [poetry]: https://github.com/python-poetry/poetry
 

@@ -1,4 +1,4 @@
-# docker-check
+# [docker-check]
 
 This workflow is intended to inspect for codes that included inside docker image and dockerfile.
 
@@ -19,7 +19,7 @@ This workflow is intended to inspect for codes that included inside docker image
 ## Workflow inputs
 
 | Name                | Description                                                         | Default                       |
-|---------------------|---------------------------------------------------------------------|-------------------------------|
+| ------------------- | ------------------------------------------------------------------- | ----------------------------- |
 | `working-directory` | Relative directory path under `GITHUB_WORKSPACE` to the repository. | `.`                           |
 | `docker-tag`        | Docker tag tagged in the workflow.                                  | `docker-image:github-actions` |
 | `docker-filename`   | Name of the Dockerfile.                                             | `Dockerfile`                  |
@@ -33,6 +33,8 @@ Nothing.
 - [actions/checkout]
 - [hadolint/hadolint-action]
 - [aquasecurity/trivy-action]
+
+[docker-check]: ../.github/workflows/docker-check.yaml
 
 [hadolint]: https://github.com/hadolint/hadolint
 [dockle]: https://github.com/goodwithtech/dockle

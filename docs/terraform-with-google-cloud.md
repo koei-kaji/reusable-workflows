@@ -1,4 +1,4 @@
-# terraform-with-google-cloud
+# [terraform-with-google-cloud]
 
 This workflow is intended to execute [terraform] with Google Cloud.  
 It is assumed below.
@@ -36,7 +36,7 @@ It is assumed below.
 ## Workflow secret inputs
 
 | Name                         | Description                                                                                         |
-|------------------------------|-----------------------------------------------------------------------------------------------------|
+| ---------------------------- | --------------------------------------------------------------------------------------------------- |
 | `workload-identity-provider` | See [google-github-actions/auth:action.yml].                                                        |
 | `service-account`            | See [google-github-actions/auth:action.yml].                                                        |
 | `backend-gcs`                | Google Cloud Storage for terraform backend, for example: `gs://project-id/tf-state`                 |
@@ -46,7 +46,7 @@ It is assumed below.
 ## Workflow inputs
 
 | Name                    | Description                                                                                       | Default                           |
-|-------------------------|---------------------------------------------------------------------------------------------------|-----------------------------------|
+| ----------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------- |
 | `environment-directory` | Target environment directory. Relative directory path under `GITHUB_WORKSPACE` to the repository. | `.`                               |
 | `terraform-version`     | Terraform version.                                                                                | -                                 |
 | `command-check-format`  | Command to execute for checking format.                                                           | `terraform fmt -recursive -check` |
@@ -111,6 +111,8 @@ Nothing.
 - [google-github-actions/auth]
 - [hashicorp/setup-terraform]
 - [actions/github-script]
+
+[terraform-with-google-cloud]: ../.github/workflows/terraform-with-google-cloud.yaml
 
 [google-github-actions/auth:action.yml]: https://github.com/google-github-actions/auth/blob/95a6bc2a27ae409a01ea58dd0732eccaa088ec07/action.yml
 

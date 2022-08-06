@@ -1,4 +1,4 @@
-# repository-dispatch
+# [repository-dispatch]
 
 This workflow is intended to send the dispatch.  
 This workflow is using great useful workflow: [peter-evans/repository-dispatch] almost as it is.
@@ -25,7 +25,7 @@ But we can use it to send the dispatch to private repository easily.
 ## Workflow secret inputs
 
 | Name          | Description             |
-|---------------|-------------------------|
+| ------------- | ----------------------- |
 | `token`       | GitHub token.           |
 | `app-id`      | GitHub App ID.          |
 | `private-key` | GitHub App Private Key. |
@@ -33,7 +33,7 @@ But we can use it to send the dispatch to private repository easily.
 ## Workflow inputs
 
 | Name             | Description                                                                                       | Default |
-|------------------|---------------------------------------------------------------------------------------------------|---------|
+| ---------------- | ------------------------------------------------------------------------------------------------- | ------- |
 | `repository`     | The full name of the repository to send the dispatch.                                             | -       |
 | `event-type`     | A custom webhook event name.                                                                      | -       |
 | `client-payload` | JSON payload with extra information about the webhook event that your action or workflow may use. | `{}`    |
@@ -47,6 +47,8 @@ Nothing.
 - [getsentry/action-github-app-token]
 - [actions/checkout]
 - [peter-evans/repository-dispatch]
+
+[repository-dispatch]: ../.github/workflows/repository-dispatch.yaml
 
 [peter-evans/repository-dispatch]: https://github.com/marketplace/actions/repository-dispatch?version=v2.0.0
 [getsentry/action-github-app-token]: https://github.com/marketplace/actions/action-github-app-token

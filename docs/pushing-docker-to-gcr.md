@@ -1,4 +1,4 @@
-# pushing-docker-to-gcr
+# [pushing-docker-to-gcr]
 
 This workflow is intended to push docker image to Google Container Registry.  
 It is assumed that using workload identity federation.  
@@ -26,7 +26,7 @@ It is assumed that using workload identity federation.
 ## Workflow secret inputs
 
 | Name                         | Description                                           |
-|------------------------------|-------------------------------------------------------|
+| ---------------------------- | ----------------------------------------------------- |
 | `workload-identity-provider` | See [google-github-actions/auth:action.yml].          |
 | `service-account`            | See [google-github-actions/auth:action.yml].          |
 | `project-id`                 | GCP Project ID.                                       |
@@ -35,7 +35,7 @@ It is assumed that using workload identity federation.
 ## Workflow inputs
 
 | Name                | Description                                                         | Default      |
-|---------------------|---------------------------------------------------------------------|--------------|
+| ------------------- | ------------------------------------------------------------------- | ------------ |
 | `working-directory` | Relative directory path under `GITHUB_WORKSPACE` to the repository. | `.`          |
 | `docker-tag`        | Tag of the docker image.                                            | -            |
 | `dockerfile-name`   | Name of the Dockerfile.                                             | `Dockerfile` |
@@ -49,6 +49,8 @@ Nothing.
 - [actions/checkout]
 - [google-github-actions/auth]
 - [google-github-actions/setup-gcloud]
+
+[pushing-docker-to-gcr]: ../.github/workflows/pushing-docker-to-gcr.yaml
 
 [google-github-actions/auth:action.yml]: https://github.com/google-github-actions/auth/blob/95a6bc2a27ae409a01ea58dd0732eccaa088ec07/action.yml
 

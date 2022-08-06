@@ -1,4 +1,4 @@
-# kustomize-set-image-and-build
+# [kustomize-set-image-and-build]
 
 This workflow is intended to execute kustomize command for updating image of the kustomization, and building a set of KRM.  
 
@@ -30,14 +30,14 @@ This workflow is intended to execute kustomize command for updating image of the
 ## Workflow secret inputs
 
 | Name         | Description             |
-|--------------|-------------------------|
+| ------------ | ----------------------- |
 | `token`      | GitHub token.           |
 | `docker-tag` | Docker tag set to name. |
 
 ## Workflow inputs
 
 | Name                    | Description                                                                                                             | Default |
-|-------------------------|-------------------------------------------------------------------------------------------------------------------------|---------|
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------- |
 | `updates-image`         | Whether to set image and its new name in the kustomization file.                                                        | `false` |
 | `image-set-directory`   | Relative directory path under `GITHUB_WORKSPACE` to the repository. The kustomization file in the directory is updated. | -       |
 | `image-set-name`        | Image name set new name and tag.                                                                                        | -       |
@@ -116,6 +116,8 @@ Nothing.
 
 - [actions/checkout]
 - [peter-evans/create-pull-request]
+
+[kustomize-set-image-and-build]: ../.github/workflows/kustomize-set-image-and-build.yaml
 
 [kubeval]: https://github.com/instrumenta/kubeval
 

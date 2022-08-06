@@ -1,4 +1,4 @@
-# submodules-update
+# [submodules-update]
 
 This workflow is intended to update submodules.  
 If we want to update submodules of private repository, we can update it easily by using this with GitHub App id and private key.  
@@ -20,7 +20,7 @@ If we want to update submodules of private repository, we can update it easily b
 ## Workflow secret inputs
 
 | Name          | Description             |
-|---------------|-------------------------|
+| ------------- | ----------------------- |
 | `token`       | GitHub token.           |
 | `app-id`      | GitHub App ID.          |
 | `private-key` | GitHub App Private Key. |
@@ -37,6 +37,8 @@ Nothing.
 
 - [getsentry/action-github-app-token]
 - [actions/checkout]
+
+[submodules-update]: ../.github/workflows/submodules-update.yaml
 
 [getsentry/action-github-app-token]: https://github.com/marketplace/actions/
 [actions/checkout]: https://github.com/marketplace/actions/checkout

@@ -1,4 +1,4 @@
-# node-code-check
+# [node-code-check]
 
 This workflow is intended to inspect for node codes.  
 It is assumed that using [volta] to fix node and npm version.
@@ -23,7 +23,7 @@ It is assumed that using [volta] to fix node and npm version.
 ## Workflow inputs
 
 | Name                   | Description                                                         | Default                |
-|------------------------|---------------------------------------------------------------------|------------------------|
+| ---------------------- | ------------------------------------------------------------------- | ---------------------- |
 | `working-directory`    | Relative directory path under `GITHUB_WORKSPACE` to the repository. | `.`                    |
 | `command-check-format` | Command to execute for checking format.                             | `npm run format:check` |
 | `command-lint`         | Command to execute for linting.                                     | `npm run lint`         |
@@ -38,6 +38,8 @@ Nothing.
 - [actions/checkout]
 - [volta-cli/action]
 - [actions/cache]
+
+[node-code-check]: ../.github/workflows/node-code-check.yaml
 
 [volta]: https://github.com/volta-cli/volta
 
