@@ -15,7 +15,6 @@ It is assumed that using [poetry].
     uses: koei-kaji/reusable-github-actions/.github/workflows/python-code-check.yaml@{ref}
     with:
       python-version: "3.10.5"
-      pip-version: "22.1.2"
       poetry-version: "1.1.13"
       working-directory: "./test_stubs/python/"
       command-check-format: "make format-check"
