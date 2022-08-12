@@ -132,6 +132,7 @@ jobs:
         if: ${{ inputs.create-issue && steps.run-trivy-action.outcome == 'failure' }}
         uses: JasonEtco/create-an-issue@v2
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ACTOR: ${{ github.actor }}
           SHA: ${{ github.sha }}
           ACTIONS_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
