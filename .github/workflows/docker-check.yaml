@@ -16,6 +16,10 @@ on:
         description: "dockerfile name"
         type: string
         default: "Dockerfile"
+      trivy-exit-code:
+        description: "Exit code when specified vulnerabilities are found"
+        type: string
+        default: 1
 
 jobs:
   check-docker:
@@ -59,8 +63,14 @@ jobs:
 
       #----------------------------------------------
       # scan with trivy
+      # 1. run trivy
+      # 2. set output trivy results
+      #    https://github.com/marketplace/actions/create-or-update-comment#setting-the-comment-body-from-a-file
+      # 3. comment if trivy step was failure
+      # 4. exit ${{ inputs.trivy-exit-code }} if trivy step was failure
       #----------------------------------------------
       - name: Run Trivy vulnerability scanner
+        id: run-trivy-vulnerability-scanner
         uses: aquasecurity/trivy-action@0.5.1
         with:
           image-ref: ${{ inputs.docker-tag }}
@@ -68,3 +78,27 @@ jobs:
           exit-code: 1
           ignore-unfixed: true
           output: "trivy-results.txt"
+        continue-on-error: true
+
+      - name: Set output trivy results
+        id: set-toutput-trivy-results
+        if: ${{ steps.run-trivy-vulnerability-scanner.outcome == 'failure' }}
+        run: |
+          body="$(cat comment-body.txt)"
+          body="${body//'%'/'%25'}"
+          body="${body//$'\n'/'%0A'}"
+          body="${body//$'\r'/'%0D'}" 
+          echo "::set-output name=body::$body"
+
+      - name: Comment if trivy step was failure
+        id: comment-if-trivy-step-was-failure
+        if: ${{ steps.run-trivy-vulnerability-scanner.outcome == 'failure' && github.event_name == 'pull_request' }}
+        uses: peter-evens/create-or-update-comment@v2
+        with:
+          body: ${{ steps.set-toutput-trivy-results.outputs.body }}
+          issue-number: ${{ github.event.pull_request.number }}
+
+      - name: Exit ${{ inputs.trivy-exit-code }} if trivy step was failure
+        id: exit-if-trivy-step-was-failure
+        if: ${{ steps.run-trivy-vulnerability-scanner.outcome == 'failure' }}
+        run: exit ${{ inputs.trivy-exit-code }}
