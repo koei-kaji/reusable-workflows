@@ -46,7 +46,7 @@ Nothing.
   # ...
 ```
 
-![img](./img/docker_check_update_pr.png.png)
+![img](./img/docker_check_update_pr.png)
 
 ### Create issue if trivy is in failure
 
@@ -59,7 +59,7 @@ Nothing.
   # ...
 ```
 
-![img](./img/../docker_check_create_issue.png)
+![img](./img/docker_check_create_issue.png)
 
 ## Actions built with
 
