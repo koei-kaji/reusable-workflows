@@ -65,6 +65,6 @@ jobs:
         with:
           image-ref: ${{ inputs.docker-tag }}
           format: "table"
-          exit: 1
+          exit-code: 1
           ignore-unfixed: true
           output: "trivy-results.txt"
