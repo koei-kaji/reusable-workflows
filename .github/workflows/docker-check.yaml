@@ -93,7 +93,7 @@ jobs:
       - name: Comment if trivy step was failure
         id: comment-if-trivy-step-was-failure
         if: ${{ steps.run-trivy-vulnerability-scanner.outcome == 'failure' && github.event_name == 'pull_request' }}
-        uses: peter-evens/create-or-update-comment@v2
+        uses: peter-evans/create-or-update-comment@v2
         with:
           body: ${{ steps.set-toutput-trivy-results.outputs.body }}
           issue-number: ${{ github.event.pull_request.number }}
