@@ -24,3 +24,4 @@ jobs:
     uses: ./.github/workflows/docker-check.yaml
     with:
       working-directory: "./test_stubs/node/"
+      create-issue: true

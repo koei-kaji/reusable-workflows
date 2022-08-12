@@ -24,6 +24,10 @@ on:
         description: "whether to update pull request to comment result of trivy"
         type: boolean
         default: true
+      create-issue:
+        description: "whether to create an issue if trivy was failure"
+        type: boolean
+        default: false
 
 jobs:
   check-docker:
@@ -71,6 +75,7 @@ jobs:
       # 2. set output trivy results
       #    https://github.com/marketplace/actions/create-or-update-comment#setting-the-comment-body-from-a-file
       # 3. (optional) update pull request
+      # 3. (optional) create an issue if trivy step was failure
       # 4. exit ${{ inputs.trivy-exit-code }} if trivy step was failure
       #----------------------------------------------
       - name: Run Trivy action
@@ -121,6 +126,20 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
+
+      - name: Create an issue if trivy was failure
+        id: create-an-issue-if-trivy-was-failure
+        if: ${{ inputs.create-issue && steps.run-trivy-action.outcome == 'failure' }}
+        uses: JasonEtco/create-an-issue@v2
+        env:
+          ACTOR: ${{ github.actor }}
+          SHA: ${{ github.sha }}
+          ACTIONS_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          TRIVY_RESULTS: ${{ steps.set-output-trivy-results.outputs.results }}
+        with:
+          filename: .github/trivy_scan_failure_template.md
+          update_existing: true
+          search_existing: all
 
       - name: Exit ${{ inputs.trivy-exit-code }} if trivy step was failure
         id: exit-if-trivy-step-was-failure
