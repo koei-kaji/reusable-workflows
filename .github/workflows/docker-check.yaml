@@ -108,6 +108,8 @@ jobs:
             const results = `${{ steps.set-output-trivy-results.outputs.results }}`;
 
             const output = `
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
             #### Trivy Scan 🤖\`${{ steps.run-trivy-action.outcome }}\`
 
             <details><summary>Show Trivy Results</summary>
