@@ -17,9 +17,13 @@ on:
         type: string
         default: "Dockerfile"
       trivy-exit-code:
-        description: "Exit code when specified vulnerabilities are found"
+        description: "exit code when specified vulnerabilities are found"
         type: string
         default: 1
+      update-pull-request:
+        description: "whether to update pull request to comment result of trivy"
+        type: boolean
+        default: true
 
 jobs:
   check-docker:
@@ -63,14 +67,14 @@ jobs:
 
       #----------------------------------------------
       # scan with trivy
-      # 1. run trivy
+      # 1. run trivy action
       # 2. set output trivy results
       #    https://github.com/marketplace/actions/create-or-update-comment#setting-the-comment-body-from-a-file
-      # 3. comment if trivy step was failure
+      # 3. (optional) update pull request
       # 4. exit ${{ inputs.trivy-exit-code }} if trivy step was failure
       #----------------------------------------------
-      - name: Run Trivy vulnerability scanner
-        id: run-trivy-vulnerability-scanner
+      - name: Run Trivy action
+        id: run-trivy-action
         uses: aquasecurity/trivy-action@0.5.1
         with:
           image-ref: ${{ inputs.docker-tag }}
@@ -81,24 +85,44 @@ jobs:
         continue-on-error: true
 
       - name: Set output trivy results
-        id: set-toutput-trivy-results
-        if: ${{ steps.run-trivy-vulnerability-scanner.outcome == 'failure' }}
+        id: set-output-trivy-results
+        if: ${{ steps.run-trivy-action.outcome == 'failure' }}
         run: |
-          body="$(cat trivy-results.txt)"
-          body="${body//'%'/'%25'}"
-          body="${body//$'\n'/'%0A'}"
-          body="${body//$'\r'/'%0D'}" 
-          echo "::set-output name=body::$body"
+          results="$(cat trivy-results.txt)"
+          results="${results//'%'/'%25'}"
+          results="${results//$'\n'/'%0A'}"
+          results="${results//$'\r'/'%0D'}" 
+          echo "::set-output name=results::$results"
 
-      - name: Comment if trivy step was failure
-        id: comment-if-trivy-step-was-failure
-        if: ${{ steps.run-trivy-vulnerability-scanner.outcome == 'failure' && github.event_name == 'pull_request' }}
-        uses: peter-evans/create-or-update-comment@v2
+      - name: Update pull request
+        id: update-pull-request
+        if: ${{ inputs.update-pull-request && github.event_name == 'pull_request' }}
+        uses: actions/github-script@v6
         with:
-          body: ${{ steps.set-toutput-trivy-results.outputs.body }}
-          issue-number: ${{ github.event.pull_request.number }}
+          script: |
+            const results = `${{ steps.set-output-trivy-results.outputs.results }}`;
+
+            const output = `
+            #### Trivy Scan 🤖\`${{ steps.run-trivy-action.outcome }}\`
+
+            <details><summary>Show Trivy Results</summary>
+
+            \`\`\`\n
+            ${results}
+            \`\`\`
+
+            </details>
+
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
 
       - name: Exit ${{ inputs.trivy-exit-code }} if trivy step was failure
         id: exit-if-trivy-step-was-failure
-        if: ${{ steps.run-trivy-vulnerability-scanner.outcome == 'failure' }}
+        if: ${{ steps.run-trivy-action.outcome == 'failure' }}
         run: exit ${{ inputs.trivy-exit-code }}
