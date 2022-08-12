@@ -19,9 +19,11 @@ jobs:
     uses: ./.github/workflows/docker-check.yaml
     with:
       working-directory: "./test_stubs/python/"
+      trivy-exit-code: 0
 
   test-node:
     uses: ./.github/workflows/docker-check.yaml
     with:
       working-directory: "./test_stubs/node/"
       create-issue: true
+      trivy-exit-code: 0
