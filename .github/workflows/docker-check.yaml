@@ -144,9 +144,9 @@ jobs:
 
           <details><summary>Show Trivy Results</summary>
 
-          ```
+          \`\`\`
           {{ env.TRIVY_RESULTS }}
-          ```
+          \`\`\`
 
           </details>
           EOF
