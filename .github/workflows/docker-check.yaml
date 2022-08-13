@@ -129,6 +129,28 @@ jobs:
               body: output
             })
 
+      - name: Create issue template if trivy was failure
+        id: create-issue-template-if-trivy-was-failure
+        run: |
+          cat << EOF > .github/trivy_scan_failure_template.md
+          ---
+          title: Trivy scan failure
+          labels: vulnerability
+          ---
+          Trivy scan was failured !!!  
+          Here's who did it: @{{ env.ACTOR }}.  
+          commit hash: {{ env.SHA }}  
+          actions: {{ env.ACTIONS_URL }}
+
+          <details><summary>Show Trivy Results</summary>
+
+          ```
+          {{ env.TRIVY_RESULTS }}
+          ```
+
+          </details>
+          EOF
+
       - name: Create an issue if trivy was failure
         id: create-an-issue-if-trivy-was-failure
         if: ${{ inputs.create-issue && steps.run-trivy-action.outcome == 'failure' }}
