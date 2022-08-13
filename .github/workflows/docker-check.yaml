@@ -131,6 +131,7 @@ jobs:
 
       - name: Create issue template if trivy was failure
         id: create-issue-template-if-trivy-was-failure
+        if: ${{ inputs.create-issue && steps.run-trivy-action.outcome == 'failure' }}
         run: |
           cat << EOF > .github/trivy_scan_failure_template.md
           ---
@@ -163,8 +164,8 @@ jobs:
           TRIVY_RESULTS: ${{ steps.set-output-trivy-results.outputs.results }}
         with:
           filename: .github/trivy_scan_failure_template.md
-          update_existing: true
-          search_existing: all
+          update_existing: false
+          search_existing: open
 
       - name: Exit ${{ inputs.trivy-exit-code }} if trivy step was failure
         id: exit-if-trivy-step-was-failure
