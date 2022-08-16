@@ -34,11 +34,12 @@ It is assumed that using workload identity federation.
 
 ## Workflow inputs
 
-| Name                | Description                                                         | Default      |
-| ------------------- | ------------------------------------------------------------------- | ------------ |
-| `working-directory` | Relative directory path under `GITHUB_WORKSPACE` to the repository. | `.`          |
-| `docker-tag`        | Tag of the docker image.                                            | -            |
-| `dockerfile-name`   | Name of the Dockerfile.                                             | `Dockerfile` |
+| Name                  | Description                                                                                                      | Default      |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------ |
+| `checkout-submodules` | Whether to checkout submodules: `true` to checkout submodules or `recursive` to recursively checkout submodules. | `false`      |
+| `working-directory`   | Relative directory path under `GITHUB_WORKSPACE` to the repository.                                              | `.`          |
+| `docker-tag`          | Tag of the docker image.                                                                                         | -            |
+| `dockerfile-name`     | Name of the Dockerfile.                                                                                          | `Dockerfile` |
 
 ## Workflow outputs
 

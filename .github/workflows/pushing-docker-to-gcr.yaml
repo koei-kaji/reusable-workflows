@@ -17,6 +17,11 @@ on:
         description: "registory host"
         required: true
     inputs:
+      checkout-submodules:
+        description: |
+          whether to checkout submodules: `true` to checkout submodules or `recursive` to recursively checkout submodules.
+        type: string
+        default: false
       working-directory:
         description: "workdir"
         type: string
@@ -47,7 +52,7 @@ jobs:
         id: check-out-repository
         uses: actions/checkout@v3
         with:
-          submodules: recursive
+          submodules: ${{ inputs.checkout-submodules }}
 
       #----------------------------------------------
       # authenticate to google cloud & set up gcloud
