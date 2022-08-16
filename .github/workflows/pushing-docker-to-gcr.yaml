@@ -46,6 +46,8 @@ jobs:
       - name: Check out repository
         id: check-out-repository
         uses: actions/checkout@v3
+        with:
+          submodules: recursive
 
       #----------------------------------------------
       # authenticate to google cloud & set up gcloud
