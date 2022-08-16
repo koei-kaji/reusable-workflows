@@ -24,7 +24,7 @@ This workflow is intended to inspect for codes that included inside docker image
 | --------------------- | ------------------------------------------------------------------- | ----------------------------- |
 | `working-directory`   | Relative directory path under `GITHUB_WORKSPACE` to the repository. | `.`                           |
 | `docker-tag`          | Docker tag tagged in the workflow.                                  | `docker-image:github-actions` |
-| `docker-filename`     | Name of the Dockerfile.                                             | `Dockerfile`                  |
+| `dockerfile-name`     | Name of the Dockerfile.                                             | `Dockerfile`                  |
 | `trivy-exit-code`     | Exit code when specified vulnerabilities are found.                 | `1`                           |
 | `update-pull-request` | Whether to update PR to comment results of trivy.                   | `true`                        |
 | `create-issue`        | Whether to create an issue if trivy was failure.                    | `false`                       |
