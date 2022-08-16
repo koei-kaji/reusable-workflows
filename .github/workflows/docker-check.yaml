@@ -58,6 +58,8 @@ jobs:
       - name: Build docker
         id: build-docker
         working-directory: ${{ inputs.working-directory }}
+        env:
+          DOCKER_BUILDKIT: 1
         run: docker build --no-cache -t ${{ inputs.docker-tag }} -f ${{ inputs.dockerfile-name }} .
 
       #----------------------------------------------
